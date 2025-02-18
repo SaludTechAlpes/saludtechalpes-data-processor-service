@@ -29,8 +29,10 @@ run-tests:
 	FLASK_ENV=test coverage run -m pytest
 
 run-tests-coverage:
-	 make run-tests
-	 coverage report
+	 FLASK_ENV=test coverage run -m unittest discover -s tests -p '*Test.py' -v
+	 coverage report -m
+	 coverage html
+	 coverage report --fail-under=50
 
 docker-up:
 	docker compose up --build
