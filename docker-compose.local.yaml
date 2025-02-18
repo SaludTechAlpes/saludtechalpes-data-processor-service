@@ -1,0 +1,14 @@
+services:
+  images-service:
+    build:
+      context: .
+      dockerfile: local.Dockerfile
+    container_name: saludtechalpes-images-local-service
+    restart: always
+    volumes:
+      - ".:/app"
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env.local
+    tty: true
