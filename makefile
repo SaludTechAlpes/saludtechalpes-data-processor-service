@@ -26,7 +26,7 @@ else
 endif
 
 run-tests:
-	FLASK_ENV=test coverage run -m pytest
+	FLASK_ENV=test python -m unittest discover -s tests -p '*Test.py' -v
 
 run-tests-coverage:
 	 FLASK_ENV=test coverage run -m unittest discover -s tests -p '*Test.py' -v
