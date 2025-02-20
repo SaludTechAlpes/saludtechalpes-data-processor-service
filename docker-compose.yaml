@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: saludtechalpes-images-service
+    container_name: saludtechalpes-data-processor-service
     restart: always
     volumes:
       - ".:/app"
