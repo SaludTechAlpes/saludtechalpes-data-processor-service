@@ -1,9 +1,9 @@
 # Description
 This is a microservice to handle images 🏞️ processing and anonimization them.
 
-![Github](https://github.com/zearkiatos/saludtechalpes-data-processor-service/actions/workflows/action.yaml/badge.svg)
-![Github](https://github.com/zearkiatos/saludtechalpes-data-processor-service/actions/workflows/merge-to-develop.yaml/badge.svg)
-![Github](https://github.com/zearkiatos/saludtechalpes-data-processor-service/actions/workflows/release-to-main.yaml/badge.svg)
+![Github](https://github.com/SaludTechAlpes/saludtechalpes-data-processor-service/actions/workflows/action.yaml/badge.svg)
+![Github](https://github.com/SaludTechAlpes/saludtechalpes-data-processor-service/actions/workflows/merge-to-develop.yaml/badge.svg)
+![Github](https://github.com/SaludTechAlpes/saludtechalpes-data-processor-service/actions/workflows/release-to-main.yaml/badge.svg)
 
 # Made with
 [![Python](https://img.shields.io/badge/python-2b5b84?style=for-the-badge&logo=python&logoColor=white&labelColor=000000)]()
