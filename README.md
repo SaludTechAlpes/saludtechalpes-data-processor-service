@@ -16,7 +16,7 @@ Note: firstable is important that you have your python virtual environmente crea
 
 into directory flaskr execute
 ```bash
-$ flask run
+$ flask --app ./src run
 ```
 
 # Prerequirements
