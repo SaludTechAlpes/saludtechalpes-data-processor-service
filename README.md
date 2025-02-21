@@ -23,12 +23,6 @@ $ flask run
 * For Linux 🐧 and mac 🍎 you can use makefile.
 * For Windows 🪟 you can use bash function.
 
-## ⚠️ Important
-
-It is important to have all the projects and repositories in the next folder
-
-# [IMAGE]
-
 # How to execute with docker 🐳
 
 1. Step one locate in the root of the project
