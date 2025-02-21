@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import uuid
 from modulos.anonimizacion.dominio.reglas import FormatoImagenValido
-from modulos.anonimizacion.dominio.eventos import ImagenAnonimizadaEvento
+from modulos.anonimizacion.dominio.eventos import DatosAnonimizadosEvento
 from modulos.anonimizacion.dominio.entidades import ImagenAnonimizada, MetadatosAnonimizados
 from seedwork.aplicacion.servicios import Servicio
 from modulos.anonimizacion.infraestructura.adaptadores import AdaptadorAnonimizacion
@@ -40,9 +40,14 @@ class ServicioAplicacionAnonimizacion(Servicio):
 
         self.repositorio_imagenes.agregar(imagen_anonimizada)
 
-        evento = ImagenAnonimizadaEvento(
+        evento = DatosAnonimizadosEvento(
             id_imagen=id_imagen,
             ruta_imagen_anonimizada=imagen_anonimizada.ruta_imagen_anonimizada,
+            id_paciente=imagen_anonimizada.metadatos.token_paciente,
+            modalidad=imagen_anonimizada.metadatos.modalidad,
+            region_anatomica=imagen_anonimizada.metadatos.region_anatomica,
+            fecha_estudio=imagen_anonimizada.metadatos.fecha_estudio,
+            etiquetas_patologicas=imagen_anonimizada.metadatos.etiquetas,
             fecha=datetime.now(timezone.utc)
         )
 
