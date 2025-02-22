@@ -1,21 +1,28 @@
 import pulsar
 import json
-from modulos.anonimizacion.infraestructura.schema.v1.eventos import EventoDatosAnonimizados, DatosAnonimizadosPayload
-from modulos.anonimizacion.infraestructura.schema.v1.comandos import ComandoAnonimizarDatos, ComandoAnonimizarDatosPayload
+import logging
+from modulos.anonimizacion.infraestructura.schema.v1.eventos import EventoDatosAnonimizados
+from modulos.anonimizacion.infraestructura.schema.v1.comandos import ComandoAnonimizarDatos
 from seedwork.infraestructura import utils
 import datetime
 
-epoch = datetime.datetime.utcfromtimestamp(0)
-
-def unix_time_millis(dt):
-    return int((dt - epoch).total_seconds() * 1000.0)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Despachador:
+    def __init__(self):
+        self.cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+    
     def _publicar_mensaje(self, mensaje, topico):
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        publicador = cliente.create_producer(topico)
-        publicador.send(json.dumps(mensaje).encode('utf-8'))
-        cliente.close()
+        try:
+            logger.info(f"Publicando mensaje en {topico}: {mensaje}")
+            publicador = self.cliente.create_producer(topico)
+            publicador.send(json.dumps(mensaje).encode('utf-8'))
+            logger.info(f"Mensaje publicado con éxito en {topico}")
+        except Exception as e:
+            logger.error(f"Error publicando mensaje en {topico}: {e}")
+        finally:
+            publicador.close()
 
     def publicar_evento(self, evento, topico):
         payload = {
@@ -24,7 +31,7 @@ class Despachador:
             "id_paciente": str(evento.id_paciente),
             "modalidad": evento.modalidad,
             "region_anatomica": evento.region_anatomica,
-            "fecha_estudio": unix_time_millis(evento.fecha_estudio),
+            "fecha_estudio": evento.fecha_estudio.isoformat(),  # 🔹 Convertimos a ISO-8601
             "etiquetas_patologicas": evento.etiquetas_patologicas
         }
         self._publicar_mensaje(payload, topico)
@@ -36,3 +43,7 @@ class Despachador:
             "ruta_metadatos": comando.ruta_metadatos
         }
         self._publicar_mensaje(payload, topico)
+
+    def cerrar(self):
+        self.cliente.close()
+        logger.info("Cliente Pulsar cerrado.")

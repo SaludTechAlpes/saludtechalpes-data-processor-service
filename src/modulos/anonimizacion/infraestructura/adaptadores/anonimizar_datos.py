@@ -1,8 +1,8 @@
-from modulos.anonimizacion.dominio.puertos import PuertoAnonimizacion
+from src.modulos.anonimizacion.dominio.puertos.anonimizar_datos import PuertoAnonimizarDatos
 import random
 from datetime import datetime, timedelta
 
-class AdaptadorAnonimizacion(PuertoAnonimizacion):
+class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
     MODALIDADES_PERMITIDAS = ["Rayos X", "Resonancia Magnética", "Tomografía Computarizada", "Ultrasonido", "Mamografía"]
     REGIONES_ANATOMICAS = ["Tórax", "Cerebro", "Abdomen", "Rodilla", "Columna Vertebral"]
     ETIQUETAS_PATOLOGICAS = ["Normal", "Fractura", "Tumor", "Infección", "Inflamación", "Maligno", "Benigno"]

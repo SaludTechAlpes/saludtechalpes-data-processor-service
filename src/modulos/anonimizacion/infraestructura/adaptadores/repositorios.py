@@ -1,5 +1,5 @@
 from uuid import UUID
-from modulos.anonimizacion.dominio.repositorios import RepositorioImagenAnonimizada
+from src.modulos.anonimizacion.dominio.puertos.repositorios import RepositorioImagenAnonimizada
 from modulos.anonimizacion.dominio.entidades import ImagenAnonimizada
 from modulos.anonimizacion.infraestructura.dto import ImagenAnonimizadaDTO
 from modulos.anonimizacion.infraestructura.mapeadores import MapeadorImagenAnonimizada

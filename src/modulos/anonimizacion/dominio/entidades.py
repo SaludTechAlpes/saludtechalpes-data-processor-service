@@ -13,7 +13,6 @@ class ImagenAnonimizada(AgregacionRaiz):
     id: uuid.UUID = field(default_factory=uuid.uuid4)
     ruta_imagen_anonimizada: str
     fecha_procesamiento: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    estado: ov.EstadoAnonimizacion = field(default=ov.EstadoAnonimizacion.PENDIENTE)
     metadatos: MetadatosAnonimizados
 
     def marcar_como_procesada(self):

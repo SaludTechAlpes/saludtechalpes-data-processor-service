@@ -13,11 +13,6 @@ class EtiquetaPatologica(Enum):
     INFECCION = "Infección"
     ANOMALIA_CONGENITA = "Anomalía congénita"
 
-class EstadoAnonimizacion(Enum):
-    PENDIENTE = "PENDIENTE"
-    PROCESADO = "PROCESADO"
-    ERROR = "ERROR"
-
 class Modalidad(Enum):
     RAYOS_X = "Rayos X"
     TOMOGRAFIA = "Tomografía"
