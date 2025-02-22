@@ -2,7 +2,7 @@ import pulsar
 import logging
 import traceback
 import json
-from src.modulos.anonimizacion.dominio.puertos.procesar_evento_anonimizacion import PuertoProcesarEventoAnonimizacion
+from modulos.anonimizacion.dominio.puertos.procesar_evento_anonimizacion import PuertoProcesarEventoAnonimizacion
 from seedwork.infraestructura import utils
 
 logging.basicConfig(level=logging.INFO)

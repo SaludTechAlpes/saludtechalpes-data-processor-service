@@ -22,7 +22,7 @@ def create_app(configuracion=None):
 
     # Inicializa la aplicación Flask
     app = Flask(__name__, instance_relative_config=True)
-P
+
     # Inicializar Pulsar solo una vez
     pulsar_cliente = pulsar.Client(f'pulsar://{config.PULSAR_HOST}:6650')
     despachador = Despachador()
