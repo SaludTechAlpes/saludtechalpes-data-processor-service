@@ -2,9 +2,14 @@ import os
 import pulsar
 import json
 import logging
+import threading
+
 from flask import Flask, jsonify
-from src.config import Config
-from src.modulos.anonimizacion.infraestructura.despachadores import Despachador
+from config import Config
+from modulos.ingesta.infraestructura.despachadores import Despachador
+from modulos.ingesta.dominio.comandos import DatosImportadosComando
+import modulos.anonimizacion.infraestructura.consumidores as anonimizacion_consumidores
+from config.db import Base, engine
 
 # Configuración de logs
 logging.basicConfig(level=logging.INFO)
@@ -14,18 +19,29 @@ logger = logging.getLogger(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = Config()
 
-# Inicializar Pulsar
-pulsar_cliente = None
+# Inicializar Pulsar (Se usará globalmente)
+pulsar_cliente = pulsar.Client('pulsar://broker:6650')
+
+def comenzar_consumidor():
+    """
+    Inicia los consumidores en hilos separados.
+    """
+    pulsar_cliente.create_producer("comandos-ingesta")
+    threading.Thread(target=anonimizacion_consumidores.suscribirse_a_comandos, daemon=True).start()
 
 def create_app(configuracion=None):
     global pulsar_cliente
 
-    # Inicializa la aplicación Flask
     app = Flask(__name__, instance_relative_config=True)
 
-    # Inicializar Pulsar solo una vez
-    pulsar_cliente = pulsar.Client(f'pulsar://{config.PULSAR_HOST}:6650')
-    despachador = Despachador()
+    with app.app_context():
+        Base.metadata.create_all(engine) 
+        if not app.config.get('TESTING'):
+            comenzar_consumidor()
+
+    despachador_ingesta = Despachador()
+
+    
 
     @app.route("/health")
     def health():
@@ -35,30 +51,25 @@ def create_app(configuracion=None):
             "environment": config.ENVIRONMENT
         }
 
-    @app.route("/test-pulsar", methods=["GET"])
-    def test_pulsar():
+    @app.route("/simular-ingesta-evento", methods=["GET"])
+    def simular_ingesta_evento():
         """
-        Endpoint para probar la publicación de eventos en Pulsar.
+        Endpoint para probar la publicación de comandos en Pulsar.
         """
         try:
-            # Crear evento de prueba
-            evento_prueba = {
-                "id_imagen": "123e4567-e89b-12d3-a456-426614174000",
-                "ruta_imagen_anonimizada": "/ruta/fake/imagen.dcm",
-                "id_paciente": "111e2222-e33b-44d5-a666-777888999000",
-                "modalidad": "Rayos X",
-                "region_anatomica": "Tórax",
-                "fecha_estudio": "2024-02-21T12:34:56Z",
-                "etiquetas_patologicas": ["Normal"]
-            }
+            comando_prueba = DatosImportadosComando(
+                ruta_imagen="/ruta/fake/imagen.dcm",
+                ruta_metadatos="/ruta/fake/metadatos.pdf",
+            )
 
-            # Publicar evento en Pulsar
-            despachador.publicar_evento(evento_prueba, "eventos-anonimizacion")
+            despachador_ingesta.publicar_comando(comando_prueba, "comandos-ingesta")
 
-            return jsonify({"message": "Evento de prueba enviado a Pulsar"}), 200
+            return jsonify({"message": "Comando enviado a Pulsar"}), 200
         except Exception as e:
-            logger.error(f"Error al enviar evento de prueba: {e}")
-            return jsonify({"error": "Error al enviar evento a Pulsar"}), 500
+            logger.error(f"Error al enviar comando de prueba: {e}")
+            return jsonify({"error": "Error al enviar comando a Pulsar"}), 500
+
+    
 
     # Cerrar Pulsar cuando la aplicación termina
     @app.teardown_appcontext

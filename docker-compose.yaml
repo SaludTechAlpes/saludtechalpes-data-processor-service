@@ -85,10 +85,15 @@ services:
       - managedLedgerDefaultWriteQuorum=1
       - managedLedgerDefaultAckQuorum=1
       - advertisedAddress=broker
-      - advertisedListeners=external:pulsar://127.0.0.1:6650
+      - advertisedListeners=internal:pulsar://broker:6650,external:pulsar://localhost:6650
     depends_on:
       - zookeeper
       - bookie
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/admin/v2/clusters"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
     ports:
       - "6650:6650"
       - "8080:8080"
@@ -102,15 +107,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     networks:
       - db_net
       - pulsar
     depends_on:
-      - broker
-      - db
+      broker:
+        condition: service_healthy
+      db:
+        condition: service_started
     env_file:
-      - .env
+      - .env.local
     ports:
       - "5000:5000"
 

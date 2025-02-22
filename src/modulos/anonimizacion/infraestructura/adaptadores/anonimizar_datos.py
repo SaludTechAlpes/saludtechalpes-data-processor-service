@@ -7,9 +7,9 @@ class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
     REGIONES_ANATOMICAS = ["Tórax", "Cerebro", "Abdomen", "Rodilla", "Columna Vertebral"]
     ETIQUETAS_PATOLOGICAS = ["Normal", "Fractura", "Tumor", "Infección", "Inflamación", "Maligno", "Benigno"]
 
-    def anonimizar_datos(self, ruta_imagen: str, ruta_archivo_metadatos: str) -> dict:
+    def anonimizar_datos(self, ruta_imagen: str, ruta_metadatos: str) -> dict:
         ruta_anonimizada = self._anonimizar_imagen(ruta_imagen)
-        metadatos_extraidos = self._extraccion_metadatos(ruta_archivo_metadatos)
+        metadatos_extraidos = self._extraccion_metadatos(ruta_metadatos)
 
         return {
             "ruta_imagen_anonimizada": ruta_anonimizada,
@@ -19,7 +19,7 @@ class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
     def _anonimizar_imagen(self, ruta_imagen) -> str:
         return "ruta_imagen_anonimizada"
 
-    def _extraccion_metadatos(self, ruta_archivo_metadatos) -> dict:
+    def _extraccion_metadatos(self, ruta_metadatos) -> dict:
         metadatos_simulados = {
             "modalidad": random.choice(self.MODALIDADES_PERMITIDAS),
             "region_anatomica": random.choice(self.REGIONES_ANATOMICAS),

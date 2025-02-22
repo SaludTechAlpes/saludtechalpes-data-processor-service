@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 from seedwork.infraestructura.schema.v1.comandos import (ComandoIntegracion)
 
 class ComandoAnonimizarDatosPayload(ComandoIntegracion):
-    id_imagen = String()
     ruta_imagen = String()
     ruta_metadatos = String()
 
