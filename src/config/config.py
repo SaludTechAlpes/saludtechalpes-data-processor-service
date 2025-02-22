@@ -13,5 +13,10 @@ class Config:
             load_dotenv(dotenv_path='.env', override=True)
 
         self.ENVIRONMENT = environment
-        self.APP_NAME=os.getenv('APP_NAME')
-        self.PHRASE_KEY=os.getenv('PHRASE_KEY')
+        self.APP_NAME = os.getenv('APP_NAME', 'saludtech-data-processor')
+        self.PULSAR_HOST = os.getenv('PULSAR_HOST', 'pulsar')
+        self.DB_HOST = os.getenv('DB_HOST', 'db')
+        self.DB_PORT = os.getenv('DB_PORT', '5432')
+        self.DB_USER = os.getenv('DB_USER', 'admin')
+        self.DB_PASSWORD = os.getenv('DB_PASSWORD', 'admin')
+        self.DB_NAME = os.getenv('DB_NAME', 'saludtechalpes')

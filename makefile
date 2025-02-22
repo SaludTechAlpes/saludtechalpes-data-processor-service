@@ -38,7 +38,7 @@ docker-up:
 	docker compose up --build
 
 docker-down:
-	docker compose down
+	docker compose down -v
 
 docker-local-up:
 	docker compose -f=docker-compose.local.yaml up --build

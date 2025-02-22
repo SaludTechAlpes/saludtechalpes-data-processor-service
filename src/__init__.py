@@ -57,7 +57,7 @@ def create_app(configuracion=None):
 
             return jsonify({"message": "Evento de prueba enviado a Pulsar"}), 200
         except Exception as e:
-            logger.error(f"🚨 Error al enviar evento de prueba: {e}")
+            logger.error(f"Error al enviar evento de prueba: {e}")
             return jsonify({"error": "Error al enviar evento a Pulsar"}), 500
 
     # Cerrar Pulsar cuando la aplicación termina
@@ -66,6 +66,6 @@ def create_app(configuracion=None):
         global pulsar_cliente
         if pulsar_cliente:
             pulsar_cliente.close()
-            logger.info("🔴 Cliente Pulsar cerrado al detener Flask.")
+            logger.info("Cliente Pulsar cerrado al detener Flask.")
 
     return app
