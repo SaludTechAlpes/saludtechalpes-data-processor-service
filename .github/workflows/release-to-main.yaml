@@ -66,6 +66,7 @@ jobs:
           CLUSTER_NAME: ${{ vars.CLUSTER_NAME }}
           CLUSTER_ZONE: ${{ vars.CLUSTER_ZONE }}
           PHRASE_KEY: ${{ secrets.PHRASE_KEY }}
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |
           gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
 
