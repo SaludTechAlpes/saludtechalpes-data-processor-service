@@ -14,7 +14,7 @@ class ConsumidorComandosAnonimizacion(ConsumidorPulsar):
     """
     def __init__(self, puerto_anonimizacion: PuertoProcesarComandoAnonimizacion):
         cliente = pulsar.Client('pulsar://broker:6650')
-        super().__init__(cliente, "comandos-ingesta", "saludtech-sub-comandos", ComandoAnonimizarDatos)
+        super().__init__(cliente, "comandos-anonimizacion", "saludtech-sub-comandos", ComandoAnonimizarDatos)
         self.puerto_anonimizacion = puerto_anonimizacion
 
     def procesar_mensaje(self, data):

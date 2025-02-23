@@ -36,12 +36,12 @@ class ConsumidorPulsar(Consumidor):
             while True:
                 mensaje = self.consumidor.receive()
                 data = mensaje.value().data
-                logger.info(f'Comando recibido en {self.topico}: {data}')
+                logger.info(f'Mensaje recibido en {self.topico}: {data}')
 
                 try:
                     self.procesar_mensaje(data)
                     self.consumidor.acknowledge(mensaje)
-                    logger.info("Comando procesado con éxito")
+                    logger.info("Mensaje procesado con éxito")
                 except Exception as e:
                     logger.error(f"Error procesando comando: {e}")
                     self.consumidor.negative_acknowledge(mensaje)

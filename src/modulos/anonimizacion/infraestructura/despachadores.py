@@ -13,13 +13,13 @@ class Despachador:
     def _publicar_mensaje(self, mensaje, topico, schema):
         try:
             cliente = pulsar.Client('pulsar://broker:6650')
-            logger.info(f"Publicando evento en {topico}: {mensaje}")
+            logger.info(f"Publicando mensaje en {topico}: {mensaje}")
             publicador = cliente.create_producer(topico, schema=AvroSchema(schema))
             publicador.send(mensaje)
-            logger.info(f"Evento publicado con éxito en {topico}")
+            logger.info(f"Mensaje publicado con éxito en {topico}")
             cliente.close()
         except Exception as e:
-            logger.error(f"Error publicando mensaje en {topico}: {e}")
+            logger.error(f"Mensaje publicando mensaje en {topico}: {e}")
 
 
     def publicar_evento(self, evento, topico):
@@ -34,6 +34,14 @@ class Despachador:
         )
         evento_gordo=EventoDatosAnonimizados(data=payload)
         self._publicar_mensaje(evento_gordo, topico, EventoDatosAnonimizados)
+
+    def publicar_comando(self, evento, topico):
+        payload = ComandoAnonimizarDatosPayload(
+            ruta_imagen=evento.ruta_imagen,
+            ruta_metadatos=evento.ruta_metadatos
+        )
+        evento_gordo=ComandoAnonimizarDatos(data=payload)
+        self._publicar_mensaje(evento_gordo, topico, ComandoAnonimizarDatos)
 
     def cerrar(self):
         self.cliente.close()

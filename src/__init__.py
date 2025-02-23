@@ -7,8 +7,9 @@ import threading
 from flask import Flask, jsonify
 from config import Config
 from modulos.ingesta.infraestructura.despachadores import Despachador
-from modulos.ingesta.dominio.comandos import DatosImportadosComando
-from modulos.anonimizacion.infraestructura.consumidores import ConsumidorComandosAnonimizacion
+from modulos.ingesta.dominio.eventos import DatosImportadosEvento
+from modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
+from modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
 from modulos.anonimizacion.aplicacion.servicios import ServicioAplicacionAnonimizacion
 from modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
 from modulos.anonimizacion.infraestructura.adaptadores.repositorios import RepositorioImagenAnonimizadaPostgres
@@ -35,12 +36,12 @@ def comenzar_consumidor():
     
     # Instanciar el servicio de aplicación con sus dependencias
     servicio_anonimizacion = ServicioAplicacionAnonimizacion(adaptador_anonimizacion, repositorio_imagenes)
-    
-    # Instanciar el consumidor y pasarle el servicio de aplicación
-    consumidor = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
 
-    # Ejecutar el consumidor en un hilo para no bloquear Flask
-    threading.Thread(target=consumidor.suscribirse, daemon=True).start()
+    consumidor_eventos = ConsumidorEventosIngesta()
+    threading.Thread(target=consumidor_eventos.suscribirse, daemon=True).start()
+    
+    consumidor_comandos = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
+    threading.Thread(target=consumidor_comandos.suscribirse, daemon=True).start()
 
 def create_app(configuracion=None):
     global pulsar_cliente
@@ -70,14 +71,14 @@ def create_app(configuracion=None):
         Endpoint para probar la publicación de comandos en Pulsar.
         """
         try:
-            comando_prueba = DatosImportadosComando(
+            evento_prueba = DatosImportadosEvento(
                 ruta_imagen="/ruta/fake/imagen.dcm",
                 ruta_metadatos="/ruta/fake/metadatos.pdf",
             )
 
-            despachador_ingesta.publicar_comando(comando_prueba, "comandos-ingesta")
+            despachador_ingesta.publicar_evento(evento_prueba, "eventos-ingesta")
 
-            return jsonify({"message": "Comando enviado a Pulsar"}), 200
+            return jsonify({"message": "Evento enviado a Pulsar"}), 200
         except Exception as e:
             logger.error(f"Error al enviar comando de prueba: {e}")
             return jsonify({"error": "Error al enviar comando a Pulsar"}), 500

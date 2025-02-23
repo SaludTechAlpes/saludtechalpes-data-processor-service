@@ -1,7 +1,7 @@
 import pulsar
 from pulsar.schema import AvroSchema
 import logging
-from modulos.ingesta.infraestructura.schema.v1.comandos import ComandoAnonimizarDatosPayload, ComandoAnonimizarDatos
+from modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportadosPayload, EventoDatosImportados
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +17,14 @@ class Despachador:
         except Exception as e:
             logger.error(f"Error publicando mensaje en {topico}: {e}")
     
-    def publicar_comando(self, evento, topico):
-        payload = ComandoAnonimizarDatosPayload(
+    def publicar_evento(self, evento, topico):
+        payload = EventoDatosImportadosPayload(
             ruta_imagen=evento.ruta_imagen,
             ruta_metadatos=evento.ruta_metadatos
         )
-        evento_ingesta = ComandoAnonimizarDatos(data=payload)
-        self._publicar_mensaje(evento_ingesta, topico, ComandoAnonimizarDatos)
+        evento_ingesta = EventoDatosImportados(data=payload)
+        self._publicar_mensaje(evento_ingesta, topico, EventoDatosImportados)
+
     
     def cerrar(self):
         self.cliente.close()

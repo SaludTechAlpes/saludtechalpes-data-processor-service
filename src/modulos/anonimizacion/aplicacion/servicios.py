@@ -61,7 +61,7 @@ class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
             )
 
             self.despachador.publicar_evento(evento, 'eventos-anonimizacion')
-            logger.info(f"Imagen {id_imagen} anonimizada y evento publicado: {evento}")
+            logger.info(f"Imagen {id_imagen} anonimizada y evento publicado al topico eventos-anonimizacion: {evento}")
 
         except Exception as e:
             logger.error(f"Error al anonimizar la imagen: {e}")
