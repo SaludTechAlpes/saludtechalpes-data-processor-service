@@ -65,7 +65,7 @@ $ docker ps
 curl --location 'http://localhost:3001/health' --header 'Content-Type: application/json'
 ```
 
-### Body in JSON
+### Body response
 
 ```json
 {
