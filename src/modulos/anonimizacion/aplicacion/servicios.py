@@ -1,8 +1,8 @@
-from modulos.anonimizacion.dominio.puertos import PuertoAplicacionAnonimizacion
+from modulos.anonimizacion.dominio.puertos.procesar_comando_anonimizacion import PuertoProcesarComandoAnonimizacion
 from modulos.anonimizacion.dominio.servicios import ServicioDominioAnonimizacion
 from modulos.anonimizacion.dominio.entidades import ImagenAnonimizada, MetadatosAnonimizados
-from modulos.anonimizacion.infraestructura.adaptadores import AdaptadorAnonimizacion
-from modulos.anonimizacion.dominio.repositorios import RepositorioImagenAnonimizada
+from modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
+from modulos.anonimizacion.dominio.puertos.repositorios import RepositorioImagenAnonimizada
 from modulos.anonimizacion.infraestructura.despachadores import Despachador
 from modulos.anonimizacion.dominio.eventos import DatosAnonimizadosEvento
 import uuid
@@ -13,30 +13,34 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class ServicioAplicacionAnonimizacion(PuertoAplicacionAnonimizacion):
-    def __init__(self, adaptador_anonimizacion: AdaptadorAnonimizacion, repositorio_imagenes: RepositorioImagenAnonimizada):
+class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
+    def __init__(self, adaptador_anonimizacion: AdaptadorAnonimizarDatos, repositorio_imagenes: RepositorioImagenAnonimizada):
         self.adaptador_anonimizacion = adaptador_anonimizacion
         self.repositorio_imagenes = repositorio_imagenes
+        self.servicio_dominio = ServicioDominioAnonimizacion()
         self.despachador = Despachador()
 
-    def procesar_evento_anonimizacion(self, id_imagen: uuid.UUID, ruta_imagen: str):
+    def procesar_comando_anonimizacion(self, ruta_imagen: str, ruta_metadatos: str):
         try:
-            ServicioDominioAnonimizacion.validar_imagen(ruta_imagen)
+            self.servicio_dominio.validar_imagen(ruta_imagen)
 
-            datos_anonimizados = self.adaptador_anonimizacion.anonimizar_datos(ruta_imagen, "")
+            datos_anonimizados = self.adaptador_anonimizacion.anonimizar_datos(ruta_imagen, ruta_metadatos)
 
             if not datos_anonimizados:
-                raise ValueError(f"Error: No se pudo anonimizar la imagen {id_imagen}")
+                raise ValueError("Error: No se pudo anonimizar la imagen")
+            
+            logger.info(f'datos_anonimizados: {datos_anonimizados}')
 
             metadatos_anonimizados = MetadatosAnonimizados(
                 id=uuid.uuid4(),
                 token_paciente=uuid.uuid4(),
                 modalidad=datos_anonimizados["metadatos_anonimizados"]["modalidad"],
                 region_anatomica=datos_anonimizados["metadatos_anonimizados"]["region_anatomica"],
-                fecha_estudio=datetime.now(timezone.utc),
-                etiquetas=datos_anonimizados["metadatos_anonimizados"]
+                fecha_estudio=datos_anonimizados["metadatos_anonimizados"]["fecha_estudio"],
+                etiquetas=datos_anonimizados["metadatos_anonimizados"]["etiquetas"]
             )
 
+            id_imagen=uuid.uuid4()
             imagen_anonimizada = ImagenAnonimizada(
                 id=id_imagen,
                 ruta_imagen_anonimizada=datos_anonimizados["ruta_imagen_anonimizada"],
@@ -54,12 +58,11 @@ class ServicioAplicacionAnonimizacion(PuertoAplicacionAnonimizacion):
                 region_anatomica=imagen_anonimizada.metadatos.region_anatomica,
                 fecha_estudio=imagen_anonimizada.metadatos.fecha_estudio,
                 etiquetas_patologicas=imagen_anonimizada.metadatos.etiquetas,
-                fecha=datetime.now(timezone.utc)
             )
 
             self.despachador.publicar_evento(evento, 'eventos-anonimizacion')
-            logger.info(f"Imagen {id_imagen} anonimizada y evento publicado")
+            logger.info(f"Imagen {id_imagen} anonimizada y evento publicado: {evento}")
 
         except Exception as e:
-            logger.error(f"Error al anonimizar la imagen {id_imagen}: {e}")
+            logger.error(f"Error al anonimizar la imagen: {e}")
             raise

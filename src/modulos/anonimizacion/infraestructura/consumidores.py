@@ -1,32 +1,24 @@
-import pulsar,_pulsar  
-from pulsar.schema import AvroSchema
-import uuid
-import time
-import logging
-import traceback
-
 from modulos.ingesta.infraestructura.schema.v1.comandos import ComandoAnonimizarDatos
-from seedwork.infraestructura import utils
+from modulos.anonimizacion.dominio.puertos.procesar_comando_anonimizacion import PuertoProcesarComandoAnonimizacion
+from seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
+import pulsar
+import logging
 
-
-logging.basicConfig(level=logging.INFO)
+# Configuración de logs
+logging.basicConfig(level=logging.DEBUG)  # Usamos DEBUG para obtener más información
 logger = logging.getLogger(__name__)
 
-def suscribirse_a_comandos():
-    cliente = None
-    try:
+class ConsumidorComandosAnonimizacion(ConsumidorPulsar):
+    """
+    Consumidor de comandos de anonimización que usa Pulsar.
+    """
+    def __init__(self, puerto_anonimizacion: PuertoProcesarComandoAnonimizacion):
         cliente = pulsar.Client('pulsar://broker:6650')
-        consumidor = cliente.subscribe('comandos-ingesta', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='saludtech-sub-comandos', schema=AvroSchema(ComandoAnonimizarDatos))
+        super().__init__(cliente, "comandos-ingesta", "saludtech-sub-comandos", ComandoAnonimizarDatos)
+        self.puerto_anonimizacion = puerto_anonimizacion
 
-        while True:
-            mensaje = consumidor.receive()
-            logger.info(f'Comando recibido: {mensaje.value().data}')
-
-            consumidor.acknowledge(mensaje)     
-            
-        cliente.close()
-    except Exception as error:
-        logging.error(f'Error suscribiendose al tópico de comandos: {error}')
-        traceback.print_exc()
-        if cliente:
-            cliente.close()
+    def procesar_mensaje(self, data):
+        self.puerto_anonimizacion.procesar_comando_anonimizacion(
+            ruta_imagen=data.ruta_imagen,
+            ruta_metadatos=data.ruta_metadatos
+        )

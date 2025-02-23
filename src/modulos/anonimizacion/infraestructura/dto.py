@@ -10,7 +10,6 @@ class ImagenAnonimizadaDTO(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ruta_imagen_anonimizada = Column(String, nullable=False)
     fecha_procesamiento = Column(DateTime, nullable=False)
-    estado = Column(String, nullable=False)
     metadatos_id = Column(UUID(as_uuid=True), ForeignKey("metadatos_anonimizados.id", ondelete="SET NULL"), nullable=True)
     metadatos = relationship("MetadatosAnonimizadosDTO", back_populates="imagen")
 

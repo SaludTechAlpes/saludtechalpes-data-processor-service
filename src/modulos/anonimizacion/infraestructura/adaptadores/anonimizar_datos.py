@@ -1,7 +1,11 @@
 from src.modulos.anonimizacion.dominio.puertos.anonimizar_datos import PuertoAnonimizarDatos
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
+import logging
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
     MODALIDADES_PERMITIDAS = ["Rayos X", "Resonancia Magnética", "Tomografía Computarizada", "Ultrasonido", "Mamografía"]
     REGIONES_ANATOMICAS = ["Tórax", "Cerebro", "Abdomen", "Rodilla", "Columna Vertebral"]
@@ -10,6 +14,8 @@ class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
     def anonimizar_datos(self, ruta_imagen: str, ruta_metadatos: str) -> dict:
         ruta_anonimizada = self._anonimizar_imagen(ruta_imagen)
         metadatos_extraidos = self._extraccion_metadatos(ruta_metadatos)
+
+        logger.info(f"Datos anonimizados de manera exitosa. Ruta imagen anonimizada {ruta_anonimizada} y ruta metadatos anonimizados {metadatos_extraidos}")
 
         return {
             "ruta_imagen_anonimizada": ruta_anonimizada,
@@ -23,15 +29,10 @@ class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
         metadatos_simulados = {
             "modalidad": random.choice(self.MODALIDADES_PERMITIDAS),
             "region_anatomica": random.choice(self.REGIONES_ANATOMICAS),
-            "fecha_estudio": self._generar_fecha_aleatoria(),
+            "fecha_estudio": datetime.now(timezone.utc),
             "etiquetas": self._generar_etiquetas_aleatorias()
         }
         return metadatos_simulados
-
-    def _generar_fecha_aleatoria(self) -> str:
-        dias_atras = random.randint(1, 365)
-        fecha_aleatoria = datetime.now() - timedelta(days=dias_atras)
-        return fecha_aleatoria.strftime("%Y-%m-%d")
 
     def _generar_etiquetas_aleatorias(self) -> list:
         num_etiquetas = random.randint(1, 3)

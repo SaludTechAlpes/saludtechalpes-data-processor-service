@@ -8,7 +8,10 @@ from flask import Flask, jsonify
 from config import Config
 from modulos.ingesta.infraestructura.despachadores import Despachador
 from modulos.ingesta.dominio.comandos import DatosImportadosComando
-import modulos.anonimizacion.infraestructura.consumidores as anonimizacion_consumidores
+from modulos.anonimizacion.infraestructura.consumidores import ConsumidorComandosAnonimizacion
+from modulos.anonimizacion.aplicacion.servicios import ServicioAplicacionAnonimizacion
+from modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
+from modulos.anonimizacion.infraestructura.adaptadores.repositorios import RepositorioImagenAnonimizadaPostgres
 from config.db import Base, engine
 
 # Configuración de logs
@@ -19,15 +22,25 @@ logger = logging.getLogger(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = Config()
 
-# Inicializar Pulsar (Se usará globalmente)
 pulsar_cliente = pulsar.Client('pulsar://broker:6650')
 
 def comenzar_consumidor():
     """
-    Inicia los consumidores en hilos separados.
+    Inicia el consumidor en un hilo separado, pasando el servicio de aplicación.
     """
-    pulsar_cliente.create_producer("comandos-ingesta")
-    threading.Thread(target=anonimizacion_consumidores.suscribirse_a_comandos, daemon=True).start()
+
+    # Crear las dependencias del servicio de aplicación
+    adaptador_anonimizacion = AdaptadorAnonimizarDatos()
+    repositorio_imagenes = RepositorioImagenAnonimizadaPostgres()
+    
+    # Instanciar el servicio de aplicación con sus dependencias
+    servicio_anonimizacion = ServicioAplicacionAnonimizacion(adaptador_anonimizacion, repositorio_imagenes)
+    
+    # Instanciar el consumidor y pasarle el servicio de aplicación
+    consumidor = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
+
+    # Ejecutar el consumidor en un hilo para no bloquear Flask
+    threading.Thread(target=consumidor.suscribirse, daemon=True).start()
 
 def create_app(configuracion=None):
     global pulsar_cliente

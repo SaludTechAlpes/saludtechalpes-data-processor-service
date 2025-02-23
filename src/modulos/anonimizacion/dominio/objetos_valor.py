@@ -12,6 +12,7 @@ class EtiquetaPatologica(Enum):
     ARTRITIS = "Artritis"
     INFECCION = "Infección"
     ANOMALIA_CONGENITA = "Anomalía congénita"
+    DEFAULT = "Default"
 
 class Modalidad(Enum):
     RAYOS_X = "Rayos X"
@@ -21,6 +22,7 @@ class Modalidad(Enum):
     MAMOGRAFIA = "Mamografía"
     ESCANEO_TEP = "Escaneo TEP"
     HISTOPATOLOGIA = "Histopatología"
+    DEFAULT = "Default"
 
 class RegionAnatomica(Enum):
     CEREBRO = "Cerebro"
@@ -29,3 +31,4 @@ class RegionAnatomica(Enum):
     MUSCULOESQUELETICO = "Musculoesquelético"
     PELVIS = "Pélvis"
     CUERPO_COMPLETO = "Cuerpo Completo"
+    DEFAULT = "Default"

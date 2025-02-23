@@ -23,7 +23,6 @@ class MapeadorImagenAnonimizada(Mapeador):
             id=imagen.id,
             ruta_imagen_anonimizada=imagen.ruta_imagen_anonimizada,
             fecha_procesamiento=imagen.fecha_procesamiento,
-            estado=imagen.estado,
             metadatos=metadatos_dto
         )
 
@@ -43,6 +42,5 @@ class MapeadorImagenAnonimizada(Mapeador):
             id=dto.id,
             ruta_imagen_anonimizada=dto.ruta_imagen_anonimizada,
             fecha_procesamiento=dto.fecha_procesamiento,
-            estado=dto.estado,
             metadatos=metadatos_entidad
         )
