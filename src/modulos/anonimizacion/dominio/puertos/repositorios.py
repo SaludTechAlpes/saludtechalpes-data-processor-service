@@ -1,5 +1,5 @@
 from abc import ABC
-from seedwork.dominio.repositorios import Repositorio
+from src.seedwork.dominio.repositorios import Repositorio
 
 class RepositorioImagenAnonimizada(Repositorio, ABC):
     ...

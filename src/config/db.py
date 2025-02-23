@@ -1,9 +1,15 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 
-DATABASE_URL = "postgresql://admin:admin@db:5432/saludtechalpes"
+FLASK_ENV = os.getenv("FLASK_ENV", "development")
 
-engine = create_engine(DATABASE_URL, pool_size=10, max_overflow=20)
+if FLASK_ENV == "test":
+    DATABASE_URL = "sqlite:///:memory:"  # Base de datos en memoria para tests
+    engine = create_engine(DATABASE_URL)
+else:
+    DATABASE_URL = "postgresql://admin:admin@db:5432/saludtechalpes"
+    engine = create_engine(DATABASE_URL, pool_size=10, max_overflow=20)
 
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 

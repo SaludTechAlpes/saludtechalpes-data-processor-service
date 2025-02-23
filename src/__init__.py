@@ -5,15 +5,15 @@ import logging
 import threading
 
 from flask import Flask, jsonify
-from config import Config
-from modulos.ingesta.infraestructura.despachadores import Despachador
-from modulos.ingesta.dominio.eventos import DatosImportadosEvento
-from modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
-from modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
-from modulos.anonimizacion.aplicacion.servicios import ServicioAplicacionAnonimizacion
-from modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
-from modulos.anonimizacion.infraestructura.adaptadores.repositorios import RepositorioImagenAnonimizadaPostgres
-from config.db import Base, engine
+from src.config.config import Config
+from src.modulos.ingesta.infraestructura.despachadores import Despachador
+from src.modulos.ingesta.dominio.eventos import DatosImportadosEvento
+from src.modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
+from src.modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
+from src.modulos.anonimizacion.aplicacion.servicios import ServicioAplicacionAnonimizacion
+from src.modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
+from src.modulos.anonimizacion.infraestructura.adaptadores.repositorios import RepositorioImagenAnonimizadaPostgres
+from src.config.db import Base, engine
 
 # Configuración de logs
 logging.basicConfig(level=logging.INFO)
@@ -23,13 +23,18 @@ logger = logging.getLogger(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = Config()
 
-pulsar_cliente = pulsar.Client('pulsar://broker:6650')
+pulsar_cliente = None
+if os.getenv("FLASK_ENV") != "test":
+    pulsar_cliente = pulsar.Client('pulsar://broker:6650')
 
 def comenzar_consumidor():
     """
     Inicia el consumidor en un hilo separado, pasando el servicio de aplicación.
     """
 
+    if os.getenv("FLASK_ENV") == "test":
+        logger.info("🔹 Saltando inicio de consumidores en modo test")
+        return
     # Crear las dependencias del servicio de aplicación
     adaptador_anonimizacion = AdaptadorAnonimizarDatos()
     repositorio_imagenes = RepositorioImagenAnonimizadaPostgres()
@@ -49,6 +54,8 @@ def create_app(configuracion=None):
     app = Flask(__name__, instance_relative_config=True)
 
     with app.app_context():
+        if app.config.get('TESTING'):
+            app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
         Base.metadata.create_all(engine) 
         if not app.config.get('TESTING'):
             comenzar_consumidor()
@@ -76,7 +83,8 @@ def create_app(configuracion=None):
                 ruta_metadatos="/ruta/fake/metadatos.pdf",
             )
 
-            despachador_ingesta.publicar_evento(evento_prueba, "eventos-ingesta")
+            if not app.config.get('TESTING'):
+                despachador_ingesta.publicar_evento(evento_prueba, "eventos-ingesta")
 
             return jsonify({"message": "Evento enviado a Pulsar"}), 200
         except Exception as e:

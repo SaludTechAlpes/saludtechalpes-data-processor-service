@@ -4,8 +4,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import List
 
-import modulos.anonimizacion.dominio.objetos_valor as ov
-from seedwork.dominio.entidades import AgregacionRaiz, Entidad
+import src.modulos.anonimizacion.dominio.objetos_valor as ov
+from src.seedwork.dominio.entidades import AgregacionRaiz, Entidad
 @dataclass
 class ImagenAnonimizada(AgregacionRaiz):
     id: uuid.UUID = field(default_factory=uuid.uuid4)

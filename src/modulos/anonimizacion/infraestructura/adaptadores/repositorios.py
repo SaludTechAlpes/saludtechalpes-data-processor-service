@@ -1,9 +1,9 @@
 from uuid import UUID
 from src.modulos.anonimizacion.dominio.puertos.repositorios import RepositorioImagenAnonimizada
-from modulos.anonimizacion.dominio.entidades import ImagenAnonimizada
-from modulos.anonimizacion.infraestructura.dto import ImagenAnonimizadaDTO
-from modulos.anonimizacion.infraestructura.mapeadores import MapeadorImagenAnonimizada
-from config.db import get_db
+from src.modulos.anonimizacion.dominio.entidades import ImagenAnonimizada
+from src.modulos.anonimizacion.infraestructura.dto import ImagenAnonimizadaDTO
+from src.modulos.anonimizacion.infraestructura.mapeadores import MapeadorImagenAnonimizada
+from src.config.db import get_db
 
 class RepositorioImagenAnonimizadaPostgres(RepositorioImagenAnonimizada):
     def __init__(self):

@@ -2,7 +2,7 @@ import pulsar, _pulsar
 from pulsar.schema import AvroSchema
 import logging
 import traceback
-from seedwork.infraestructura.consumidor import Consumidor
+from src.seedwork.infraestructura.consumidor import Consumidor
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

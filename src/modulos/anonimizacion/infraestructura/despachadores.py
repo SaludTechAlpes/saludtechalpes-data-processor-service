@@ -2,9 +2,9 @@ import pulsar
 from pulsar.schema import AvroSchema
 import json
 import logging
-from modulos.anonimizacion.infraestructura.schema.v1.eventos import DatosAnonimizadosPayload, EventoDatosAnonimizados
-from modulos.anonimizacion.infraestructura.schema.v1.comandos import ComandoAnonimizarDatosPayload, ComandoAnonimizarDatos
-from seedwork.infraestructura import utils
+from src.modulos.anonimizacion.infraestructura.schema.v1.eventos import DatosAnonimizadosPayload, EventoDatosAnonimizados
+from src.modulos.anonimizacion.infraestructura.schema.v1.comandos import ComandoAnonimizarDatosPayload, ComandoAnonimizarDatos
+from src.seedwork.infraestructura import utils
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
-from modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportados
-from seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
-from modulos.anonimizacion.infraestructura.despachadores import Despachador
-from modulos.anonimizacion.dominio.comandos import AnonimizarDatosComando
+from src.modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportados
+from src.seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
+from src.modulos.anonimizacion.infraestructura.despachadores import Despachador
+from src.modulos.anonimizacion.dominio.comandos import AnonimizarDatosComando
 import pulsar
 import logging
 

@@ -1,10 +1,10 @@
-from modulos.anonimizacion.dominio.puertos.procesar_comando_anonimizacion import PuertoProcesarComandoAnonimizacion
-from modulos.anonimizacion.dominio.servicios import ServicioDominioAnonimizacion
-from modulos.anonimizacion.dominio.entidades import ImagenAnonimizada, MetadatosAnonimizados
-from modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
-from modulos.anonimizacion.dominio.puertos.repositorios import RepositorioImagenAnonimizada
-from modulos.anonimizacion.infraestructura.despachadores import Despachador
-from modulos.anonimizacion.dominio.eventos import DatosAnonimizadosEvento
+from src.modulos.anonimizacion.dominio.puertos.procesar_comando_anonimizacion import PuertoProcesarComandoAnonimizacion
+from src.modulos.anonimizacion.dominio.servicios import ServicioDominioAnonimizacion
+from src.modulos.anonimizacion.dominio.entidades import ImagenAnonimizada, MetadatosAnonimizados
+from src.modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
+from src.modulos.anonimizacion.dominio.puertos.repositorios import RepositorioImagenAnonimizada
+from src.modulos.anonimizacion.infraestructura.despachadores import Despachador
+from src.modulos.anonimizacion.dominio.eventos import DatosAnonimizadosEvento
 import uuid
 from datetime import datetime, timezone
 import logging

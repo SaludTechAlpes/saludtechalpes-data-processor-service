@@ -1,5 +1,5 @@
 from pulsar.schema import *
-from seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
+from src.seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
 
 class DatosAnonimizadosPayload(Record):
     id_imagen = String()

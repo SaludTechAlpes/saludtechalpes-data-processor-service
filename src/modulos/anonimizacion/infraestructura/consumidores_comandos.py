@@ -1,6 +1,6 @@
-from modulos.ingesta.infraestructura.schema.v1.comandos import ComandoAnonimizarDatos
-from modulos.anonimizacion.dominio.puertos.procesar_comando_anonimizacion import PuertoProcesarComandoAnonimizacion
-from seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
+from src.modulos.ingesta.infraestructura.schema.v1.comandos import ComandoAnonimizarDatos
+from src.modulos.anonimizacion.dominio.puertos.procesar_comando_anonimizacion import PuertoProcesarComandoAnonimizacion
+from src.seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
 import pulsar
 import logging
 

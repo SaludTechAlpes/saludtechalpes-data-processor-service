@@ -1,6 +1,6 @@
-from modulos.anonimizacion.dominio.entidades import ImagenAnonimizada, MetadatosAnonimizados
-from modulos.anonimizacion.infraestructura.dto import ImagenAnonimizadaDTO, MetadatosAnonimizadosDTO
-from seedwork.dominio.repositorios import Mapeador
+from src.modulos.anonimizacion.dominio.entidades import ImagenAnonimizada, MetadatosAnonimizados
+from src.modulos.anonimizacion.infraestructura.dto import ImagenAnonimizadaDTO, MetadatosAnonimizadosDTO
+from src.seedwork.dominio.repositorios import Mapeador
 
 
 class MapeadorImagenAnonimizada(Mapeador):

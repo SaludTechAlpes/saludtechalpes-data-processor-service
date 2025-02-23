@@ -1,5 +1,5 @@
-from modulos.anonimizacion.dominio.reglas import FormatoImagenValido
-from seedwork.dominio.servicios import Servicio
+from src.modulos.anonimizacion.dominio.reglas import FormatoImagenValido
+from src.seedwork.dominio.servicios import Servicio
 
 class ServicioDominioAnonimizacion(Servicio):
     

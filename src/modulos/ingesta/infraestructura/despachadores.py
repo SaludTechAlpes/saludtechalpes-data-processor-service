@@ -1,7 +1,7 @@
 import pulsar
 from pulsar.schema import AvroSchema
 import logging
-from modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportadosPayload, EventoDatosImportados
+from src.modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportadosPayload, EventoDatosImportados
 
 logger = logging.getLogger(__name__)
 

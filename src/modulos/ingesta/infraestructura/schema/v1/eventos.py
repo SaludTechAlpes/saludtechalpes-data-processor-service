@@ -1,6 +1,6 @@
 from pulsar.schema import *
 from dataclasses import dataclass, field
-from seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
+from src.seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
 
 class EventoDatosImportadosPayload(Record):
     ruta_imagen = String()
