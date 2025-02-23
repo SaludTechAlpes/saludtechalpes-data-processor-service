@@ -60,7 +60,6 @@ jobs:
         run: |
           SERVICE_ACCOUNT=${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           SERVICE_ACCOUNT_EMAIL=$GSA_NAME@$PROJECT_ID.iam.gserviceaccount.com
-          touch service-account.json
           docker build -t us-east1-docker.pkg.dev/$PROJECT_ID/$PROJECT_ID/saludtechalpes-data-processor-service:build-$GITHUB_RUN_NUMBER .
           docker push us-east1-docker.pkg.dev/$PROJECT_ID/$PROJECT_ID/saludtechalpes-data-processor-service:build-$GITHUB_RUN_NUMBER
       
