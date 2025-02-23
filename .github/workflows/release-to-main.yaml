@@ -53,7 +53,7 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       - name: Configure Docker to use GCR
-        run: gcloud auth configure-docker gcr.io
+        run: gcloud auth configure-docker us-east1-docker.pkg.dev
       - name: Build and push Docker 🐳 image
         env:
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -61,8 +61,6 @@ jobs:
           SERVICE_ACCOUNT=${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           SERVICE_ACCOUNT_EMAIL=$GSA_NAME@$PROJECT_ID.iam.gserviceaccount.com
           touch service-account.json
-          echo $credentials_json
-          echo $SERVICE_ACCOUNT_EMAIL
           echo $SERVICE_ACCOUNT > service-account.json
           gcloud auth activate-service-account SERVICE_ACCOUNT_EMAIL --key-file=service-account.json
           docker build -t us-east1-docker.pkg.dev/$PROJECT_ID/$PROJECT_ID/saludtechalpes-data-processor-service:build-$GITHUB_RUN_NUMBER .
