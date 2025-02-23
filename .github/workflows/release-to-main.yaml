@@ -78,3 +78,4 @@ jobs:
           kubectl apply -f kubernetes/staging/k8s-hpa.yaml
           kubectl apply -f kubernetes/staging/k8s-ingress.yaml
           kubectl apply -f kubernetes/staging/k8s-secrets.yaml
+          
