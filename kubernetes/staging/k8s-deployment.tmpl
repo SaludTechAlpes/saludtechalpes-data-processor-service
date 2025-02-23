@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: saludtechalpes-data-processor-service
-          image: gcr.io/saludtechalpes/saludtechalpes-data-processor-service:{{IMAGE_TAG}}
+          image: us-east1-docker.pkg.dev/$PROJECT_ID/$PROJECT_ID/saludtechalpes-data-processor-service:{{IMAGE_TAG}}
           env:
             - name: "FLASK_ENV"
               valueFrom:
