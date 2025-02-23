@@ -65,7 +65,7 @@ $ docker ps
 curl --location 'http://localhost:3001/health' --header 'Content-Type: application/json'
 ```
 
-### Body in JSON
+### Body response
 
 ```json
 {
@@ -79,7 +79,7 @@ curl --location 'http://localhost:3001/health' --header 'Content-Type: applicati
 5. Finally, shutdown the environment in docker 🐳
 ```bash
 # With Linux 🐧 or Mac 🍎
-$ make docker-dev-down
+$ make docker-local-down
 
 # With Windows 🪟
 $ source run.sh; docker_local_down
