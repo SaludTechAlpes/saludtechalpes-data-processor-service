@@ -42,7 +42,7 @@ jobs:
   
   deploy:
     name: Deploy
-    if: success() && github.event.pull_request.merged == true && github.head_ref == 'master'
+    if: success() && github.event.pull_request.merged == true && github.head_ref == 'develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
