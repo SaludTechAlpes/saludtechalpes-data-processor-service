@@ -71,9 +71,9 @@ jobs:
         run: |
           export USE_GKE_GCLOUD_AUTH_PLUGIN=True
           gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION --project $PROJECT_ID
+          gke-gcloud-auth-plugin --version
           # gcloud components install kubectl
           # kubectl version --client
-          # gke-gcloud-auth-plugin --version
           # PHRASE_KEY=${{ secrets.PHRASE_KEY }}
           # sed "s/{{IMAGE_TAG}}/build-${GITHUB_RUN_NUMBER}/g" ./kubernetes/staging/k8s-deployment.tmpl > kubernetes/staging/k8s-deployment.yaml
           # sed "s/{{PHRASE_KEY}}/${PHRASE_KEY}/g" ./kubernetes/staging/k8s-secrets.tmpl > kubernetes/staging/k8s-secrets.yaml
