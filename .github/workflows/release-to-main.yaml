@@ -42,7 +42,7 @@ jobs:
   
   deploy:
     name: Deploy
-    if: success() && github.event.pull_request.merged == true && github.head_ref == 'main'
+    if: success() && github.event.pull_request.merged == true && github.head_ref == 'master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -78,4 +78,3 @@ jobs:
           kubectl apply -f kubernetes/staging/k8s-hpa.yaml
           kubectl apply -f kubernetes/staging/k8s-ingress.yaml
           kubectl apply -f kubernetes/staging/k8s-secrets.yaml
-          
