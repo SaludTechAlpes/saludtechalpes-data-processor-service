@@ -14,7 +14,9 @@ RUN apk add --no-cache \
     musl-dev \
     libffi-dev \
     openssl-dev \
-    python3-dev
+    python3-dev \
+    libstdc++ \
+    gcompat
 
 # Copia y actualiza pip a una versión estable (evita problemas con pulsar-client)
 COPY requirements.txt . 
