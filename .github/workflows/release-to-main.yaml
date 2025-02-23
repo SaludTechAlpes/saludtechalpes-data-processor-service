@@ -54,6 +54,12 @@ jobs:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       - name: Configure Docker to use GCR
         run: gcloud auth configure-docker us-east1-docker.pkg.dev
+      
+      - name: Install GKE Auth Plugin
+        run: gcloud components install gke-gcloud-auth-plugin
+      - name: Set Kubernetes Authentication Plugin
+        run: echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+        
       - name: Build and push Docker 🐳 image
         env:
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
