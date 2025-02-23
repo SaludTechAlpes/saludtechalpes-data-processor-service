@@ -20,7 +20,7 @@ RUN apk add --no-cache \
 
 # Copia y actualiza pip a una versión estable (evita problemas con pulsar-client)
 COPY requirements.txt . 
-RUN pip install --upgrade "pip<24.1"
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Copia el resto del código después de instalar dependencias para mejorar cacheo
