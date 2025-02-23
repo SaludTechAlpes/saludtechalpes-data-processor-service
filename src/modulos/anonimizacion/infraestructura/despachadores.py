@@ -13,10 +13,10 @@ class Despachador:
     def _publicar_mensaje(self, mensaje, topico, schema):
         try:
             cliente = pulsar.Client('pulsar://broker:6650')
-            logger.info(f"Publicando mensaje en {topico}: {mensaje}")
+            logger.info(f"Publicando evento en {topico}: {mensaje}")
             publicador = cliente.create_producer(topico, schema=AvroSchema(schema))
             publicador.send(mensaje)
-            logger.info(f"Mensaje publicado con éxito en {topico}")
+            logger.info(f"Evento publicado con éxito en {topico}")
             cliente.close()
         except Exception as e:
             logger.error(f"Error publicando mensaje en {topico}: {e}")
