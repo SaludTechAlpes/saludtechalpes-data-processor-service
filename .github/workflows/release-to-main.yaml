@@ -44,6 +44,7 @@ jobs:
     name: Deploy
     if: success() && github.event.pull_request.merged == true && github.head_ref == 'develop'
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
