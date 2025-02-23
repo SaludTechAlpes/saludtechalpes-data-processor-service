@@ -39,3 +39,42 @@ jobs:
       id: Coverage
       run: |
         make run-tests-coverage
+  
+  deploy:
+    name: Deploy
+    if: success() && github.event.pull_request.merged == true && github.head_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      - name: Configure Docker to use GCR
+        run: gcloud auth configure-docker gcr.io
+      - name: Build and push Docker 🐳 image
+        env:
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+        run: |
+          docker build -t gcr.io/$PROJECT_ID/saludtechalpes-data-processor-service:build-$GITHUB_RUN_NUMBER .
+          docker push gcr.io/$PROJECT_ID/saludtechalpes-data-processor-service:build-$GITHUB_RUN_NUMBER
+      
+      - name: Get GKE credentials
+        env:
+          CLUSTER_NAME: ${{ vars.CLUSTER_NAME }}
+          CLUSTER_ZONE: ${{ vars.CLUSTER_ZONE }}
+          PHRASE_KEY: ${{ secrets.PHRASE_KEY }}
+        run: |
+          gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
+
+      - name: kubectl apply and deploy 🚀
+        run: |
+          PHRASE_KEY=${{ secrets.PHRASE_KEY }}
+          sed "s/{{IMAGE_TAG}}/build-${GITHUB_RUN_NUMBER}/g" ./kubernetes/staging/k8s-deployment.tmpl > kubernetes/staging/k8s-deployment.yaml
+          sed "s/{{PHRASE_KEY}}/${PHRASE_KEY}/g" ./kubernetes/staging/k8s-secrets.tmpl > kubernetes/staging/k8s-secrets.yaml
+          kubectl apply -f kubernetes/staging/k8s-configMap.yaml
+          kubectl apply -f kubernetes/staging/k8s-deployment.yaml
+          kubectl apply -f kubernetes/staging/k8s-hpa.yaml
+          kubectl apply -f kubernetes/staging/k8s-ingress.yaml
+          kubectl apply -f kubernetes/staging/k8s-secrets.yaml
