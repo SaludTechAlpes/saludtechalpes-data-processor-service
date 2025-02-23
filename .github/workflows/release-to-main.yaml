@@ -17,7 +17,7 @@ jobs:
           python-version: '3.9'
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip 
+        python -m pip install --upgrade "pip<24.1" 
         pip install -r requirements.txt
     - name: Running tests 🧪
       id: test-running-id
