@@ -69,6 +69,7 @@ jobs:
           PHRASE_KEY: ${{ secrets.PHRASE_KEY }}
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |
+          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
           gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION --project $PROJECT_ID
           gcloud components install kubectl
           kubectl version --client
