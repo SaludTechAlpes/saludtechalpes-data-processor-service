@@ -49,6 +49,7 @@ docker-local-down:
 kubernetes-local-up:
 	kubectl apply -f kubernetes/local/k8s-configMap.yaml
 	kubectl apply -f kubernetes/local/k8s-secrets.yaml
+	kubectl apply -f kubernetes/local/k8s-pulsar-sidecar.yaml
 	kubectl apply -f kubernetes/local/k8s-deployment.yaml
 	kubectl apply -f kubernetes/local/k8s-hpa.yaml
 	kubectl apply -f kubernetes/local/k8s-ingress.yaml
