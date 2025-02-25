@@ -17,7 +17,7 @@ jobs:
           python-version: '3.9'
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip 
+        python -m pip install --upgrade "pip<24.1" 
         pip install -r requirements.txt
     - name: Running tests 🧪
       id: test-running-id
@@ -68,6 +68,11 @@ jobs:
           CLUSTER_REGION: ${{ vars.CLUSTER_REGION }}
           PHRASE_KEY: ${{ secrets.PHRASE_KEY }}
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
         run: |
           export USE_GKE_GCLOUD_AUTH_PLUGIN=True
           gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION --project $PROJECT_ID
@@ -80,10 +85,23 @@ jobs:
           sudo apt-get install kubectl
           kubectl version --client
           PHRASE_KEY=${{ secrets.PHRASE_KEY }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_HOST=${{ secrets.DB_HOST }}
           sed "s/{{IMAGE_TAG}}/build-${GITHUB_RUN_NUMBER}/g" ./kubernetes/staging/k8s-deployment.tmpl > kubernetes/staging/k8s-deployment.yaml
-          sed "s/{{PHRASE_KEY}}/${PHRASE_KEY}/g" ./kubernetes/staging/k8s-secrets.tmpl > kubernetes/staging/k8s-secrets.yaml
+          sed -e "s|{{PHRASE_KEY}}|${PHRASE_KEY}|g" \
+          -e "s|{{DB_USER}}|${DB_USER}|g" \
+          -e "s|{{DB_PASSWORD}}|${DB_PASSWORD}|g" \
+          -e "s|{{DB_NAME}}|${DB_NAME}|g" \
+          -e "s|{{DB_PORT}}|${DB_PORT}|g" \
+          -e "s|{{DB_HOST}}|${DB_HOST}|g" \
+          ./kubernetes/staging/k8s-secrets.tmpl > kubernetes/staging/k8s-secrets.yaml
           kubectl apply -f kubernetes/staging/k8s-configMap.yaml
           kubectl apply -f kubernetes/staging/k8s-secrets.yaml
+          kubectl apply -f kubernetes/staging/k8s-pulsar.yaml
+          kubectl apply -f kubernetes/staging/k8s-pulsar-init.yaml
           kubectl apply -f kubernetes/staging/k8s-deployment.yaml
           kubectl apply -f kubernetes/staging/k8s-hpa.yaml
           kubectl apply -f kubernetes/staging/k8s-ingress.yaml
