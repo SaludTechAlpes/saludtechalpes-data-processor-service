@@ -48,8 +48,8 @@ class ServicioAplicacionMapeo(PuertoProcesarComandoMapeo):
             id_imagen_mapeada = uuid.uuid4()
             imagen_mapeada = ImagenMapeada(
                 id=id_imagen_mapeada,
-                id_imagen = datos_mapeados.id_imagen,
-                id_cluster_patologia = datos_mapeados.id_cluster_patologia,
+                imagen_mapeada_id = datos_mapeados["id_imagen"],
+                id_cluster_patologia = datos_mapeados["id_cluster_patologia"],
             )
 
             self.repositorio_imagenes.agregar(imagen_mapeada)
