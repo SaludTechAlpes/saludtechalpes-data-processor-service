@@ -25,7 +25,7 @@ config = Config()
 
 pulsar_cliente = None
 if os.getenv("FLASK_ENV") != "test":
-    pulsar_cliente = pulsar.Client('pulsar://broker:6650')
+    pulsar_cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
 
 def comenzar_consumidor():
     """
