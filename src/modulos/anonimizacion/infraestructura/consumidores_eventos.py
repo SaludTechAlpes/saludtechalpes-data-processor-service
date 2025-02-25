@@ -4,6 +4,9 @@ from src.modulos.anonimizacion.infraestructura.despachadores import Despachador
 from src.modulos.anonimizacion.dominio.comandos import AnonimizarDatosComando
 import pulsar
 import logging
+from src.config.config import Config
+
+config = Config()
 
 # Configuración de logs
 logging.basicConfig(level=logging.DEBUG)  # Usamos DEBUG para obtener más información
@@ -16,7 +19,7 @@ class ConsumidorEventosIngesta(ConsumidorPulsar):
     despachador = Despachador()
 
     def __init__(self):
-        cliente = pulsar.Client('pulsar://broker:6650')
+        cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
         super().__init__(cliente, "eventos-ingesta", "saludtech-sub-eventos", EventoDatosImportados)
         
 
