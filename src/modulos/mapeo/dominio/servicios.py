@@ -1,7 +1,7 @@
-from src.modulos.anonimizacion.dominio.reglas import FormatoImagenValido
+from src.modulos.mapeo.dominio.reglas import ImagenExiste
 from src.seedwork.dominio.servicios import Servicio
 
-class ServicioDominioAnonimizacion(Servicio):
+class ServicioDominioMapeo(Servicio):
     
-    def validar_imagen(self, ruta_imagen: str):
-        self.validar_regla(FormatoImagenValido(ruta_imagen))
+    def validar_imagen(self, id_imagen: str):
+        self.validar_regla(ImagenExiste(id_imagen))

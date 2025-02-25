@@ -1,17 +1,16 @@
-"""Reglas de negocio del dominio de Anonimización
+"""Reglas de negocio del dominio de Mapeo
 
-En este archivo encontrará reglas de negocio del dominio de anonimización.
+En este archivo encontrará reglas de negocio del dominio de mapeo.
 """
 
 from src.seedwork.dominio.reglas import ReglaNegocio
-from src.modulos.anonimizacion.dominio.objetos_valor import EtiquetaPatologica
 
-class FormatoImagenValido(ReglaNegocio):
-    """Regla de negocio para validar que la imagen tiene el formato correcto."""
+class ImagenExiste(ReglaNegocio):
+    """Regla de negocio para validar que la imagen existe en el repositorio de imagenes."""
 
-    def __init__(self, ruta_imagen, mensaje="El formato de la imagen no es válido"):
+    def __init__(self, id_imagen, mensaje="El formato de la imagen no es válido"):
         super().__init__(mensaje)
-        self.ruta_imagen = ruta_imagen
+        self.id_imagen = id_imagen
 
     def es_valido(self) -> bool:
-        return self.ruta_imagen.endswith((".dicom", ".dcm"))
+        return self.id_imagen is not None

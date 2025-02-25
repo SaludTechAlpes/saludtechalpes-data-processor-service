@@ -1,18 +1,13 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional
+
+import uuid
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+import src.modulos.mapeo.dominio.objetos_valor as ov
+
 
 @dataclass
-class MapearDatosComando():
+class MapearDatosComando:
     id_imagen: Optional[uuid.UUID] = None
-    ruta_imagen_anonimizada: Optional[str] = None
-    id_paciente: Optional[uuid.UUID] = None
-    modalidad: Optional[ov.Modalidad] = None
-    region_anatomica: Optional[ov.RegionAnatomica] = None
-    fecha_estudio: Optional[datetime] = None
-    etiquetas_patologicas: List[ov.EtiquetaPatologica] = field(default_factory=list) 
-
-
-
-    
-    
+    etiquetas_patologicas: List[ov.EtiquetaPatologica] = field(default_factory=list)

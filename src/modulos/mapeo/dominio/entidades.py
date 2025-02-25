@@ -4,24 +4,11 @@ import uuid
 from datetime import datetime, timezone
 from typing import List
 
-import src.modulos.anonimizacion.dominio.objetos_valor as ov
-from src.seedwork.dominio.entidades import AgregacionRaiz, Entidad
-@dataclass
-class ImagenAnonimizada(AgregacionRaiz):
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
-    ruta_imagen_anonimizada: str = ""
-    fecha_procesamiento: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    metadatos: MetadatosAnonimizados = field(default_factory=lambda: MetadatosAnonimizados(
-        modalidad=ov.Modalidad.DEFAULT,
-        region_anatomica=ov.RegionAnatomica.DEFAULT
-    ))
-
+import src.modulos.mapeo.dominio.objetos_valor as ov
+from src.seedwork.dominio.entidades import Entidad
 
 @dataclass
-class MetadatosAnonimizados(Entidad):
+class ImagenMapeada(Entidad):
     id: uuid.UUID = field(default_factory=uuid.uuid4)
-    modalidad: ov.Modalidad = ov.Modalidad.DEFAULT
-    region_anatomica: ov.RegionAnatomica = ov.RegionAnatomica.DEFAULT
-    token_paciente: uuid.UUID = field(default_factory=uuid.uuid4)
-    fecha_estudio: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    etiquetas: List[ov.EtiquetaPatologica] = field(default_factory=list)
+    imagen_mapeada_id: uuid.UUID = field(default_factory=uuid.uuid4)
+    id_cluster_patologia: uuid.UUID = field(default_factory=uuid.uuid4)

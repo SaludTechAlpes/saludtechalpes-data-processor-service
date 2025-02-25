@@ -6,13 +6,25 @@ import threading
 
 from flask import Flask, jsonify
 from src.config.config import Config
+
+# Modulo de ingesta (Mock)
 from src.modulos.ingesta.infraestructura.despachadores import Despachador
 from src.modulos.ingesta.dominio.eventos import DatosImportadosEvento
-from src.modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
-from src.modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
+
+# Modulo de anonimización
 from src.modulos.anonimizacion.aplicacion.servicios import ServicioAplicacionAnonimizacion
 from src.modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
 from src.modulos.anonimizacion.infraestructura.adaptadores.repositorios import RepositorioImagenAnonimizadaPostgres
+from src.modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
+from src.modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
+
+# Modulo de mapeo
+from src.modulos.mapeo.aplicacion.servicios import ServicioAplicacionMapeo
+from src.modulos.mapeo.infraestructura.adaptadores.mapear_datos import AdaptadorMapearDatos
+from src.modulos.mapeo.infraestructura.adaptadores.repositorios import RepositorioImagenMapeadaPostgres
+from src.modulos.mapeo.infraestructura.consumidores_comandos import ConsumidorComandosMapeo
+from src.modulos.mapeo.infraestructura.consumidores_eventos import ConsumidorEventosAnonimizacion
+
 from src.config.db import Base, engine
 
 # Configuración de logs
@@ -35,18 +47,31 @@ def comenzar_consumidor():
     if os.getenv("FLASK_ENV") == "test":
         logger.info("🔹 Saltando inicio de consumidores en modo test")
         return
-    # Crear las dependencias del servicio de aplicación
+    # Crear las dependencias del servicio de aplicación de anonimización
     adaptador_anonimizacion = AdaptadorAnonimizarDatos()
     repositorio_imagenes = RepositorioImagenAnonimizadaPostgres()
     
-    # Instanciar el servicio de aplicación con sus dependencias
+    # Instanciar el servicio de aplicación de anonimización con sus dependencias
     servicio_anonimizacion = ServicioAplicacionAnonimizacion(adaptador_anonimizacion, repositorio_imagenes)
 
-    consumidor_eventos = ConsumidorEventosIngesta()
-    threading.Thread(target=consumidor_eventos.suscribirse, daemon=True).start()
+    consumidor_eventos_ingesta = ConsumidorEventosIngesta()
+    threading.Thread(target=consumidor_eventos_ingesta.suscribirse, daemon=True).start()
     
-    consumidor_comandos = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
-    threading.Thread(target=consumidor_comandos.suscribirse, daemon=True).start()
+    consumidor_comandos_anonimizacion = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
+    threading.Thread(target=consumidor_comandos_anonimizacion.suscribirse, daemon=True).start()
+
+    # Crear las dependencias del servicio de aplicación de mapeo
+    adaptador_mapeo = AdaptadorMapearDatos()
+    repositorio_imagenes_mapeadas = RepositorioImagenMapeadaPostgres()
+
+    # Instanciar el servicio de aplicación de mapeo con sus dependencias
+    servicio_mapeo = ServicioAplicacionMapeo(adaptador_mapeo, repositorio_imagenes_mapeadas)
+
+    consumidor_eventos_anonimizacion = ConsumidorEventosAnonimizacion()
+    threading.Thread(target=consumidor_eventos_anonimizacion.suscribirse, daemon=True).start()
+
+    consumidor_comandos_mapeo = ConsumidorComandosMapeo(servicio_mapeo)
+    threading.Thread(target=consumidor_comandos_mapeo.suscribirse, daemon=True).start()
 
 def create_app(configuracion=None):
     global pulsar_cliente
