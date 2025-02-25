@@ -2,6 +2,11 @@
 
 Este repositorio contiene el servicio de procesamiento de datos para el proyecto **SaludTech Alpes**. Este servicio implementa una arquitectura basada en **eventos y comandos**, utilizando **CQRS** y separación de responsabilidades para garantizar modularidad y escalabilidad.
 
+![Github](https://github.com/SaludTechAlpes/saludtechalpes-data-processor-service/actions/workflows/action.yaml/badge.svg)
+![Github](https://github.com/SaludTechAlpes/saludtechalpes-data-processor-service/actions/workflows/merge-to-develop.yaml/badge.svg)
+![Github](https://github.com/SaludTechAlpes/saludtechalpes-data-processor-service/actions/workflows/release-to-main.yaml/badge.svg)
+
+
 ## 📂 Estructura del Proyecto
 
 El proyecto sigue una estructura modular organizada por capas de **Dominio, Aplicación e Infraestructura**, siguiendo los principios de **Domain-Driven Design (DDD)**. A continuación, se describe cada parte:
