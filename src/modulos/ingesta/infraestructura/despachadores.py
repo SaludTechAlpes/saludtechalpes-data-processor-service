@@ -2,13 +2,15 @@ import pulsar
 from pulsar.schema import AvroSchema
 import logging
 from src.modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportadosPayload, EventoDatosImportados
-
+from src.config.config import Config
 logger = logging.getLogger(__name__)
+
+config = Config()
 
 class Despachador:    
     def _publicar_mensaje(self, mensaje, topico, schema):
         try:
-            cliente = pulsar.Client('pulsar://broker:6650')
+            cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
             logger.info(f"Publicando mensaje en {topico}: {mensaje.data}")
             producer = cliente.create_producer(topico, schema=AvroSchema(schema))
             producer.send(mensaje)

@@ -5,3 +5,5 @@ metadata:
 data:
   FLASK_ENV: "local"
   APP_NAME: "saludtechalpes-data-processor-service"
+  PULSAR_HOST: "pulsar"
+  BROKER_HOST: "broker"
