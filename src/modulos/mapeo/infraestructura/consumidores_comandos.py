@@ -2,6 +2,7 @@ import logging
 
 import pulsar
 
+from src.config.config import Config
 from src.modulos.mapeo.dominio.puertos.procesar_comando_mapeo import (
     PuertoProcesarComandoMapeo,
 )
@@ -12,6 +13,7 @@ from src.seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
 logging.basicConfig(level=logging.DEBUG)  # Usamos DEBUG para obtener más información
 logger = logging.getLogger(__name__)
 
+config = Config()
 
 class ConsumidorComandosMapeo(ConsumidorPulsar):
     """
@@ -19,7 +21,7 @@ class ConsumidorComandosMapeo(ConsumidorPulsar):
     """
 
     def __init__(self, puerto_mapeo: PuertoProcesarComandoMapeo):
-        cliente = pulsar.Client("pulsar://broker:6650")
+        cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
         super().__init__(
             cliente, "comandos-mapeo", "saludtech-sub-comandos", ComandoMapearDatos
         )

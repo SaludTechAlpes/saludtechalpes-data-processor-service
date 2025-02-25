@@ -4,6 +4,7 @@ import logging
 import pulsar
 from pulsar.schema import AvroSchema
 
+from src.config.config import Config
 from src.modulos.mapeo.infraestructura.schema.v1.comandos import (
     ComandoMapearDatos,
     ComandoMapearDatosPayload,
@@ -17,11 +18,12 @@ from src.seedwork.infraestructura import utils
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+config = Config()
 
 class Despachador:
     def _publicar_mensaje(self, mensaje, topico, schema):
         try:
-            cliente = pulsar.Client("pulsar://broker:6650")
+            cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
             logger.info(f"Publicando mensaje en {topico}: {mensaje}")
             publicador = cliente.create_producer(topico, schema=AvroSchema(schema))
             publicador.send(mensaje)
