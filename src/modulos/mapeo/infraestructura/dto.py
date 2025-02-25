@@ -21,6 +21,6 @@ class ImagenMapeadaDTO(Base):
     else:
         id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    id_cluster_patologia = Column(String, ForeignKey("clusters_patologias.id"))
-    id_imagen_mapeada = Column(String, ForeignKey("imagenes.id"))
+    id_cluster_patologia = Column(String)
+    id_imagen_mapeada = Column(String)
 
