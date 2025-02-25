@@ -9,9 +9,9 @@ import logging
 logging.basicConfig(level=logging.DEBUG)  # Usamos DEBUG para obtener más información
 logger = logging.getLogger(__name__)
 
-class ConsumidorEventosAnonimizacion(ConsumidorPulsar):
+class ConsumidorEventosIngesta(ConsumidorPulsar):
     """
-    Consumidor de eventos de anonimización que usa Pulsar.
+    Consumidor de eventos de ingesta que usa Pulsar.
     """
     despachador = Despachador()
 
