@@ -11,3 +11,4 @@ import src.modulos.mapeo.dominio.objetos_valor as ov
 class MapearDatosComando:
     id_imagen: Optional[uuid.UUID] = None
     etiquetas_patologicas: List[ov.EtiquetaPatologica] = field(default_factory=list)
+    ruta_imagen_anonimizada: Optional[str] = None

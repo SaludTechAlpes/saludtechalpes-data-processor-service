@@ -3,10 +3,10 @@ import logging
 import pulsar
 
 from src.config.config import Config
-from src.modulos.mapeo.dominio.puertos.procesar_comando_mapeo import (
-    PuertoProcesarComandoMapeo,
-)
-from src.modulos.mapeo.infraestructura.schema.v1.comandos import ComandoMapearDatos
+from src.modulos.mapeo.dominio.puertos.procesar_comando_mapeo import \
+    PuertoProcesarComandoMapeo
+from src.modulos.mapeo.infraestructura.schema.v1.comandos import \
+    ComandoMapearDatos
 from src.seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
 
 # Configuración de logs
@@ -29,5 +29,7 @@ class ConsumidorComandosMapeo(ConsumidorPulsar):
 
     def procesar_mensaje(self, data):
         self.puerto_mapeo.procesar_comando_mapeo(
-            id_imagen=data.id_imagen, etiquetas_patologicas=data.etiquetas_patologicas
+            id_imagen=data.id_imagen,
+            etiquetas_patologicas=data.etiquetas_patologicas,
+            ruta_imagen_anonimizada=data.ruta_imagen_anonimizada
         )

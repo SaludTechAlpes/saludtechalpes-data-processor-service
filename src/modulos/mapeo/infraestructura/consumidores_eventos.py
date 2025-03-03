@@ -27,7 +27,8 @@ class ConsumidorEventosAnonimizacion(ConsumidorPulsar):
         logger.info(f"Evento de anonimización recibido: {data}")
         comando_mapear = MapearDatosComando(
             id_imagen=data.id_imagen,
-            etiquetas_patologicas=data.etiquetas_patologicas
+            etiquetas_patologicas=data.etiquetas_patologicas,
+            ruta_imagen_anonimizada=data.ruta_imagen_anonimizada
         )
         self.despachador.publicar_comando(comando_mapear, "comandos-mapeo")
         logger.info(f"Comando públicado al tópico comandos-mapeo: {comando_mapear}")

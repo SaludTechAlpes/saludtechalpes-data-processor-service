@@ -9,5 +9,5 @@ import src.modulos.mapeo.dominio.objetos_valor as ov
 
 @dataclass
 class DatosMapeadosEvento(EventoDominio):
-    id_imagen: Optional[uuid.UUID] = None
-    id_cluster_patologia: Optional[uuid.UUID] = None
+    cluster_id: Optional[uuid.UUID] = None
+    ruta_imagen_anonimizada: Optional[str] = None
