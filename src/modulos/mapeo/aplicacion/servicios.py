@@ -43,22 +43,22 @@ class ServicioAplicacionMapeo(PuertoProcesarComandoMapeo):
             if not datos_mapeados:
                 raise ValueError("Error: No se pudo mapear la imagen")
 
-            logger.info(f"datos_mapeados: {datos_mapeados}")
-
             id_imagen_mapeada = uuid.uuid4()
             imagen_mapeada = ImagenMapeada(
                 id=id_imagen_mapeada,
-                imagen_mapeada_id = datos_mapeados["id_imagen"],
-                id_cluster_patologia = datos_mapeados["id_cluster_patologia"],
+                imagen_mapeada_id=datos_mapeados["id_imagen"],
+                id_cluster_patologia=datos_mapeados["id_cluster_patologia"],
             )
 
             self.repositorio_imagenes.agregar(imagen_mapeada)
 
             evento = DatosMapeadosEvento(
-                id_imagen_mapeada=id_imagen_mapeada,
+                id_imagen=id_imagen_mapeada,
+                id_cluster_patologia=datos_mapeados["id_cluster_patologia"],
             )
 
             self.despachador.publicar_evento(evento, "eventos-mapeo")
+
             logger.info(
                 f"Imagen {id_imagen} mapeada y evento publicado al topico eventos-mapeo: {evento}"
             )

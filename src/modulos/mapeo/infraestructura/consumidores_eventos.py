@@ -1,5 +1,5 @@
 from src.config.config import Config
-from src.modulos.mapeo.infraestructura.schema.v1.eventos import EventoDatosMapeados
+from src.modulos.anonimizacion.infraestructura.schema.v1.eventos import EventoDatosAnonimizados
 from src.seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
 from src.modulos.mapeo.infraestructura.despachadores import Despachador
 from src.modulos.mapeo.dominio.comandos import MapearDatosComando
@@ -20,10 +20,11 @@ class ConsumidorEventosAnonimizacion(ConsumidorPulsar):
 
     def __init__(self):
         cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
-        super().__init__(cliente, "eventos-anonimizacion", "saludtech-sub-eventos", EventoDatosMapeados)
+        super().__init__(cliente, "eventos-anonimizacion", "saludtech-sub-eventos", EventoDatosAnonimizados)
         
 
     def procesar_mensaje(self, data):
+        logger.info(f"Evento de anonimización recibido: {data}")
         comando_mapear = MapearDatosComando(
             id_imagen=data.id_imagen,
             etiquetas_patologicas=data.etiquetas_patologicas
