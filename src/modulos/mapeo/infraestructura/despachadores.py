@@ -20,10 +20,11 @@ logger = logging.getLogger(__name__)
 
 config = Config()
 
+
 class Despachador:
     def _publicar_mensaje(self, mensaje, topico, schema):
         try:
-            cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
+            cliente = pulsar.Client(f"pulsar://{config.BROKER_HOST}:6650")
             logger.info(f"Publicando mensaje en {topico}: {mensaje}")
             publicador = cliente.create_producer(topico, schema=AvroSchema(schema))
             publicador.send(mensaje)
@@ -34,7 +35,8 @@ class Despachador:
 
     def publicar_evento(self, evento, topico):
         payload = DatosMapeadosPayload(
-            id_imagen_mapeada=str(evento.id_imagen_mapeada),
+            id_imagen=str(evento.id_imagen),
+            id_cluster_patologia=str(evento.id_cluster_patologia),
         )
         evento_gordo = EventoDatosMapeados(data=payload)
         self._publicar_mensaje(evento_gordo, topico, EventoDatosMapeados)

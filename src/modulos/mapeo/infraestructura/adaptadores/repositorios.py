@@ -22,9 +22,6 @@ class RepositorioImagenMapeadaPostgres(RepositorioImagenMapeada):
     def agregar(self, imagen: ImagenMapeada):
         imagen_dto = self.mapeador.entidad_a_dto(imagen)
 
-        if imagen_dto.metadatos:
-            self.session.add(imagen_dto.metadatos)
-
         self.session.add(imagen_dto)
         self.session.commit()
 
