@@ -29,7 +29,7 @@ class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
             if not datos_anonimizados:
                 raise ValueError("Error: No se pudo anonimizar la imagen")
             
-            logger.info(f'datos_anonimizados: {datos_anonimizados}')
+            logger.info(f'👉 Datos_anonimizados: {datos_anonimizados}')
 
             metadatos_anonimizados = MetadatosAnonimizados(
                 id=uuid.uuid4(),
@@ -60,9 +60,9 @@ class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
                 etiquetas_patologicas=imagen_anonimizada.metadatos.etiquetas,
             )
 
-            self.despachador.publicar_evento(evento, 'eventos-anonimizacion')
-            logger.info(f"Imagen {id_imagen} anonimizada y evento publicado al topico eventos-anonimizacion: {evento}")
+            self.despachador.publicar_evento(evento, 'datos-anonimizados')
+            logger.info(f"👉 Imagen {id_imagen} anonimizada y evento publicado al topico datos-anonimizados: {evento}")
 
         except Exception as e:
-            logger.error(f"Error al anonimizar la imagen: {e}")
+            logger.error(f"❌ Error al anonimizar la imagen: {e}")
             raise

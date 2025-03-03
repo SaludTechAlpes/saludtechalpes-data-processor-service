@@ -35,10 +35,6 @@ logger = logging.getLogger(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = Config()
 
-pulsar_cliente = None
-if os.getenv("FLASK_ENV") != "test":
-    pulsar_cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
-
 def comenzar_consumidor():
     """
     Inicia el consumidor en un hilo separado, pasando el servicio de aplicación.
@@ -74,8 +70,6 @@ def comenzar_consumidor():
     threading.Thread(target=consumidor_comandos_mapeo.suscribirse, daemon=True).start()
 
 def create_app(configuracion=None):
-    global pulsar_cliente
-
     app = Flask(__name__, instance_relative_config=True)
 
     with app.app_context():
@@ -109,21 +103,11 @@ def create_app(configuracion=None):
             )
 
             if not app.config.get('TESTING'):
-                despachador_ingesta.publicar_evento(evento_prueba, "eventos-ingesta")
+                despachador_ingesta.publicar_evento(evento_prueba, "datos-importados")
 
             return jsonify({"message": "Evento enviado a Pulsar"}), 200
         except Exception as e:
-            logger.error(f"Error al enviar comando de prueba: {e}")
+            logger.error(f"❌ Error al enviar comando de prueba: {e}")
             return jsonify({"error": "Error al enviar comando a Pulsar"}), 500
-
-    
-
-    # Cerrar Pulsar cuando la aplicación termina
-    @app.teardown_appcontext
-    def cerrar_pulsar(exception=None):
-        global pulsar_cliente
-        if pulsar_cliente:
-            pulsar_cliente.close()
-            logger.info("Cliente Pulsar cerrado al detener Flask.")
 
     return app

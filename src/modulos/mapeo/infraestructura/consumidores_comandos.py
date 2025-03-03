@@ -23,7 +23,7 @@ class ConsumidorComandosMapeo(ConsumidorPulsar):
     def __init__(self, puerto_mapeo: PuertoProcesarComandoMapeo):
         cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
         super().__init__(
-            cliente, "comandos-mapeo", "saludtech-sub-comandos", ComandoMapearDatos
+            cliente, "mapear-datos", "saludtech-sub-comandos", ComandoMapearDatos
         )
         self.puerto_mapeo = puerto_mapeo
 

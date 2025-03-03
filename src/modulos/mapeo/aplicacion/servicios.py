@@ -61,9 +61,9 @@ class ServicioAplicacionMapeo(PuertoProcesarComandoMapeo):
             self.despachador.publicar_evento(evento, "datos-agrupados")
 
             logger.info(
-                f"Imagen {id_imagen} mapeada y evento publicado al topico datos-agrupados: {evento}"
+                f"👉 Imagen {id_imagen} mapeada y evento publicado al topico datos-agrupados: {evento}"
             )
 
         except Exception as e:
-            logger.error(f"Error al mapear la imagen: {e}")
+            logger.error(f"❌ Error al mapear la imagen: {e}")
             raise

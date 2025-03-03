@@ -12,7 +12,7 @@ class AdaptadorMapearDatos(PuertoMapearDatos):
     def mapear_datos(self, id_imagen: str, etiquetas_patologicas: list[str], ruta_imagen_anonimizada: str) -> dict:
         imagen_mapeada = self._mapear_imagen(id_imagen, etiquetas_patologicas, ruta_imagen_anonimizada)
 
-        logger.info("Imagen mapeada de manera exitosa")
+        logger.info("👉 Imagen mapeada de manera exitosa")
 
         return imagen_mapeada
 

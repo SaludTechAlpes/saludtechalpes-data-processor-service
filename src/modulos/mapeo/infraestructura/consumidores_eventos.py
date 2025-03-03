@@ -20,15 +20,13 @@ class ConsumidorEventosAnonimizacion(ConsumidorPulsar):
 
     def __init__(self):
         cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
-        super().__init__(cliente, "eventos-anonimizacion", "saludtech-sub-eventos", EventoDatosAnonimizados)
+        super().__init__(cliente, "datos-anonimizados", "saludtech-sub-eventos", EventoDatosAnonimizados)
         
 
     def procesar_mensaje(self, data):
-        logger.info(f"Evento de anonimización recibido: {data}")
         comando_mapear = MapearDatosComando(
             id_imagen=data.id_imagen,
             etiquetas_patologicas=data.etiquetas_patologicas,
             ruta_imagen_anonimizada=data.ruta_imagen_anonimizada
         )
-        self.despachador.publicar_comando(comando_mapear, "comandos-mapeo")
-        logger.info(f"Comando públicado al tópico comandos-mapeo: {comando_mapear}")
+        self.despachador.publicar_comando(comando_mapear, "mapear-datos")

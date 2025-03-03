@@ -20,7 +20,7 @@ class ConsumidorEventosIngesta(ConsumidorPulsar):
 
     def __init__(self):
         cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
-        super().__init__(cliente, "eventos-ingesta", "saludtech-sub-eventos", EventoDatosImportados)
+        super().__init__(cliente, "datos-importados", "saludtech-sub-eventos", EventoDatosImportados)
         
 
     def procesar_mensaje(self, data):
@@ -28,5 +28,4 @@ class ConsumidorEventosIngesta(ConsumidorPulsar):
             ruta_imagen="/ruta/fake/imagen.dcm",
             ruta_metadatos="/ruta/fake/metadatos.pdf",
         )
-        self.despachador.publicar_comando(comando_anonimizar, "comandos-anonimizacion")
-        logger.info(f"Comando públicado al tópico comandos-anonimizacion: {comando_anonimizar}")
+        self.despachador.publicar_comando(comando_anonimizar, "anonimizar-datos")
