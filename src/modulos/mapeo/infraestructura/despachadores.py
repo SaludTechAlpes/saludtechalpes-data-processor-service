@@ -35,8 +35,8 @@ class Despachador:
 
     def publicar_evento(self, evento, topico):
         payload = DatosMapeadosPayload(
-            id_imagen=str(evento.id_imagen),
-            id_cluster_patologia=str(evento.id_cluster_patologia),
+            cluster_id=str(evento.cluster_id),
+            ruta_imagen_anonimizada=evento.ruta_imagen_anonimizada
         )
         evento_gordo = EventoDatosMapeados(data=payload)
         self._publicar_mensaje(evento_gordo, topico, EventoDatosMapeados)
@@ -45,6 +45,7 @@ class Despachador:
         payload = ComandoMapearDatosPayload(
             id_imagen=str(evento.id_imagen),
             etiquetas_patologicas=evento.etiquetas_patologicas,
+            ruta_imagen_anonimizada=evento.ruta_imagen_anonimizada
         )
         evento_gordo = ComandoMapearDatos(data=payload)
         self._publicar_mensaje(evento_gordo, topico, ComandoMapearDatos)

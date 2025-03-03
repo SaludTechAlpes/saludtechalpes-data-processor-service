@@ -31,13 +31,13 @@ class ServicioAplicacionMapeo(PuertoProcesarComandoMapeo):
         self.despachador = Despachador()
 
     def procesar_comando_mapeo(
-        self, id_imagen: uuid.UUID, etiquetas_patologicas: list[str]
+        self, id_imagen: uuid.UUID, etiquetas_patologicas: list[str], ruta_imagen_anonimizada: str
     ):
         try:
             self.servicio_dominio.validar_imagen(id_imagen=str(id_imagen))
 
             datos_mapeados = self.adaptador_mapeo.mapear_datos(
-                str(id_imagen), etiquetas_patologicas
+                str(id_imagen), etiquetas_patologicas, ruta_imagen_anonimizada
             )
 
             if not datos_mapeados:
@@ -48,19 +48,20 @@ class ServicioAplicacionMapeo(PuertoProcesarComandoMapeo):
                 id=id_imagen_mapeada,
                 imagen_mapeada_id=datos_mapeados["id_imagen"],
                 id_cluster_patologia=datos_mapeados["id_cluster_patologia"],
+                ruta_imagen_anonimizada=datos_mapeados["ruta_imagen_anonimizada"]
             )
 
             self.repositorio_imagenes.agregar(imagen_mapeada)
 
             evento = DatosMapeadosEvento(
-                id_imagen=id_imagen_mapeada,
-                id_cluster_patologia=datos_mapeados["id_cluster_patologia"],
+                cluster_id = datos_mapeados["id_cluster_patologia"],
+                ruta_imagen_anonimizada = datos_mapeados["ruta_imagen_anonimizada"],
             )
 
-            self.despachador.publicar_evento(evento, "eventos-mapeo")
+            self.despachador.publicar_evento(evento, "datos-agrupados")
 
             logger.info(
-                f"Imagen {id_imagen} mapeada y evento publicado al topico eventos-mapeo: {evento}"
+                f"Imagen {id_imagen} mapeada y evento publicado al topico datos-agrupados: {evento}"
             )
 
         except Exception as e:
