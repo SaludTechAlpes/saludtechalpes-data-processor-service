@@ -120,7 +120,7 @@ spec:
               exec bin/pulsar broker
           env:
             - name: metadataStoreUrl
-              value: "metadata-store:zk:zookeeper:2181"
+              value: "zk:zookeeper:2181"
             - name: zookeeperServers
               value: "zookeeper:2181"
             - name: clusterName
