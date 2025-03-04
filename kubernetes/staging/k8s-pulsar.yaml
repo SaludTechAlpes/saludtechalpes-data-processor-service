@@ -28,7 +28,7 @@ spec:
               exec bin/pulsar zookeeper
           env:
             - name: metadataStoreUrl
-              value: "zk://zookeeper:2181"
+              value: "zk:zookeeper:2181"
           ports:
             - containerPort: 2181
 ---
@@ -120,7 +120,7 @@ spec:
               exec bin/pulsar broker
           env:
             - name: metadataStoreUrl
-              value: "zk://zookeeper:2181"
+              value: "zk:zookeeper:2181"
             - name: zookeeperServers
               value: "zookeeper:2181"
             - name: clusterName
