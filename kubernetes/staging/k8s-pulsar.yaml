@@ -128,7 +128,7 @@ spec:
             - name: advertisedAddress
               value: "broker"
             - name: advertisedListeners
-              value: "internal:pulsar://pulsar-broker:6650,external:pulsar://pulsar-broker:6650"
+              value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
           ports:
             - containerPort: 6650  # Pulsar Binary Protocol
             - containerPort: 8080  # Pulsar HTTP API
