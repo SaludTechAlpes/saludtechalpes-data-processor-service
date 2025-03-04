@@ -6,13 +6,25 @@ import threading
 
 from flask import Flask, jsonify
 from src.config.config import Config
+
+# Modulo de ingesta (Mock)
 from src.modulos.ingesta.infraestructura.despachadores import Despachador
 from src.modulos.ingesta.dominio.eventos import DatosImportadosEvento
-from src.modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
-from src.modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
+
+# Modulo de anonimización
 from src.modulos.anonimizacion.aplicacion.servicios import ServicioAplicacionAnonimizacion
 from src.modulos.anonimizacion.infraestructura.adaptadores.anonimizar_datos import AdaptadorAnonimizarDatos
 from src.modulos.anonimizacion.infraestructura.adaptadores.repositorios import RepositorioImagenAnonimizadaPostgres
+from src.modulos.anonimizacion.infraestructura.consumidores_comandos import ConsumidorComandosAnonimizacion
+from src.modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
+
+# Modulo de mapeo
+from src.modulos.mapeo.aplicacion.servicios import ServicioAplicacionMapeo
+from src.modulos.mapeo.infraestructura.adaptadores.mapear_datos import AdaptadorMapearDatos
+from src.modulos.mapeo.infraestructura.adaptadores.repositorios import RepositorioImagenMapeadaPostgres
+from src.modulos.mapeo.infraestructura.consumidores_comandos import ConsumidorComandosMapeo
+from src.modulos.mapeo.infraestructura.consumidores_eventos import ConsumidorEventosAnonimizacion
+
 from src.config.db import Base, engine
 
 # Configuración de logs
@@ -23,10 +35,6 @@ logger = logging.getLogger(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = Config()
 
-pulsar_cliente = None
-if os.getenv("FLASK_ENV") != "test":
-    pulsar_cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
-
 def comenzar_consumidor():
     """
     Inicia el consumidor en un hilo separado, pasando el servicio de aplicación.
@@ -35,22 +43,33 @@ def comenzar_consumidor():
     if os.getenv("FLASK_ENV") == "test":
         logger.info("🔹 Saltando inicio de consumidores en modo test")
         return
-    # Crear las dependencias del servicio de aplicación
+    # Crear las dependencias del servicio de aplicación de anonimización
     adaptador_anonimizacion = AdaptadorAnonimizarDatos()
     repositorio_imagenes = RepositorioImagenAnonimizadaPostgres()
     
-    # Instanciar el servicio de aplicación con sus dependencias
+    # Instanciar el servicio de aplicación de anonimización con sus dependencias
     servicio_anonimizacion = ServicioAplicacionAnonimizacion(adaptador_anonimizacion, repositorio_imagenes)
 
-    consumidor_eventos = ConsumidorEventosIngesta()
-    threading.Thread(target=consumidor_eventos.suscribirse, daemon=True).start()
+    consumidor_eventos_ingesta = ConsumidorEventosIngesta()
+    threading.Thread(target=consumidor_eventos_ingesta.suscribirse, daemon=True).start()
     
-    consumidor_comandos = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
-    threading.Thread(target=consumidor_comandos.suscribirse, daemon=True).start()
+    consumidor_comandos_anonimizacion = ConsumidorComandosAnonimizacion(servicio_anonimizacion)
+    threading.Thread(target=consumidor_comandos_anonimizacion.suscribirse, daemon=True).start()
+
+    # Crear las dependencias del servicio de aplicación de mapeo
+    adaptador_mapeo = AdaptadorMapearDatos()
+    repositorio_imagenes_mapeadas = RepositorioImagenMapeadaPostgres()
+
+    # Instanciar el servicio de aplicación de mapeo con sus dependencias
+    servicio_mapeo = ServicioAplicacionMapeo(adaptador_mapeo, repositorio_imagenes_mapeadas)
+
+    consumidor_eventos_anonimizacion = ConsumidorEventosAnonimizacion()
+    threading.Thread(target=consumidor_eventos_anonimizacion.suscribirse, daemon=True).start()
+
+    consumidor_comandos_mapeo = ConsumidorComandosMapeo(servicio_mapeo)
+    threading.Thread(target=consumidor_comandos_mapeo.suscribirse, daemon=True).start()
 
 def create_app(configuracion=None):
-    global pulsar_cliente
-
     app = Flask(__name__, instance_relative_config=True)
 
     with app.app_context():
@@ -84,21 +103,11 @@ def create_app(configuracion=None):
             )
 
             if not app.config.get('TESTING'):
-                despachador_ingesta.publicar_evento(evento_prueba, "eventos-ingesta")
+                despachador_ingesta.publicar_evento(evento_prueba, "datos-importados")
 
             return jsonify({"message": "Evento enviado a Pulsar"}), 200
         except Exception as e:
-            logger.error(f"Error al enviar comando de prueba: {e}")
+            logger.error(f"❌ Error al enviar comando de prueba: {e}")
             return jsonify({"error": "Error al enviar comando a Pulsar"}), 500
-
-    
-
-    # Cerrar Pulsar cuando la aplicación termina
-    @app.teardown_appcontext
-    def cerrar_pulsar(exception=None):
-        global pulsar_cliente
-        if pulsar_cliente:
-            pulsar_cliente.close()
-            logger.info("Cliente Pulsar cerrado al detener Flask.")
 
     return app
