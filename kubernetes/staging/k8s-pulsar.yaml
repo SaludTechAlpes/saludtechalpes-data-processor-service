@@ -79,11 +79,11 @@ spec:
           image: apachepulsar/pulsar:2.9.1
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "500m"
-            limits:
               memory: "2Gi"
               cpu: "1"
+            limits:
+              memory: "3Gi"
+              cpu: "2"
           env:
             - name: metadataServiceUri
               value: "zookeeper:2181"
