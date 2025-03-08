@@ -19,18 +19,25 @@ spec:
     spec:
       containers:
         - name: zookeeper
-          image: apachepulsar/pulsar:latest
+          image: apachepulsar/pulsar::2.9.1
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          env:
+            - name: metadataStoreUrl
+              value: "zk:zookeeper:2181"
+          ports:
+            - containerPort: 2181
           command: ["/bin/bash", "-c"]
           args:
             - >
               bin/apply-config-from-env.py conf/zookeeper.conf && 
               bin/generate-zookeeper-config.sh conf/zookeeper.conf &&
               exec bin/pulsar zookeeper
-          env:
-            - name: metadataStoreUrl
-              value: "zk:zookeeper:2181"
-          ports:
-            - containerPort: 2181
 ---
 apiVersion: v1
 kind: Service
@@ -54,6 +61,10 @@ metadata:
   labels:
     app: bookkeeper
 spec:
+  initContainers:
+    - name: wait-for-zookeeper
+      image: busybox
+      command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo waiting for zookeeper; sleep 2; done;']
   replicas: 1
   selector:
     matchLabels:
@@ -65,7 +76,7 @@ spec:
     spec:
       containers:
         - name: bookie
-          image: apachepulsar/pulsar:latest
+          image: apachepulsar/pulsar:2.9.1
           command: ["/bin/bash", "-c"]
           args:
             - >
@@ -73,7 +84,7 @@ spec:
               exec bin/pulsar bookie
           env:
             - name: metadataServiceUri
-              value: "zk://zookeeper:2181/ledgers"
+              value: "metadata-store:zk:zookeeper:2181"
             - name: clusterName
               value: "cluster-a"
           ports:
@@ -101,6 +112,13 @@ metadata:
   labels:
     app: pulsar-broker
 spec:
+  initContainers:
+    - name: wait-for-zookeeper
+      image: busybox
+      command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo waiting for zookeeper; sleep 2; done;']
+    - name: wait-for-bookkeeper
+      image: busybox
+      command: ['sh', '-c', 'until nc -z bookkeeper 3181; do echo waiting for bookkeeper; sleep 2; done;']
   replicas: 1
   selector:
     matchLabels:
@@ -126,9 +144,9 @@ spec:
             - name: clusterName
               value: "cluster-a"
             - name: advertisedAddress
-              value: "broker"
+              value: "pulsar-broker"
             - name: advertisedListeners
-              value: "internal:pulsar://broker:6650,external:pulsar://localhost:6650"
+              value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
           ports:
             - containerPort: 6650  # Pulsar Binary Protocol
             - containerPort: 8080  # Pulsar HTTP API

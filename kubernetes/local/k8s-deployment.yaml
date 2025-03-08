@@ -17,9 +17,13 @@ spec:
       labels:
         app: saludtechalpes-data-processor-service
     spec:
+      initContainers:  # 🛑 Wait for PostgreSQL before starting the main app
+        - name: wait-for-postgres
+          image: busybox
+          command: ['sh', '-c', 'until nc -z postgres-service 5432; do echo waiting for postgres; sleep 2; done;']
       containers:
         - name: saludtechalpes-data-processor-service
-          image: caprilespe/saludtechalpes-data-processor-service:0.1.1
+          image: caprilespe/saludtechalpes-data-processor-service:latest
           env:
             - name: "FLASK_ENV"
               valueFrom:
