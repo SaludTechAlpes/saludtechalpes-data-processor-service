@@ -29,7 +29,7 @@ spec:
               cpu: "1"
           env:
             - name: metadataStoreUrl
-              value: "zookeeper:2181"
+              value: "zk:zookeeper:2181"
           ports:
             - containerPort: 2181
           command: ["/bin/bash", "-c"]
@@ -86,7 +86,7 @@ spec:
               cpu: "1"
           env:
             - name: metadataServiceUri
-              value: "zookeeper:2181"
+              value: "zk:zookeeper:2181"
             - name: clusterName
               value: "cluster-a"
           ports:
@@ -145,7 +145,7 @@ spec:
               exec bin/pulsar broker
           env:
             - name: metadataStoreUrl
-              value: "zookeeper:2181"
+              value: "zk:zookeeper:2181"
             - name: zookeeperServers
               value: "zookeeper:2181"
             - name: clusterName
