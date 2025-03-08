@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: zookeeper
-          image: apachepulsar/pulsar::2.9.1
+          image: apachepulsar/pulsar:2.9.1
           resources:
             requests:
               memory: "1Gi"
