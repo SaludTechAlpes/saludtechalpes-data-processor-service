@@ -76,7 +76,7 @@ spec:
           command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo waiting for zookeeper; sleep 2; done;']
       containers:
         - name: bookie
-          image: apachepulsar/pulsar:2.9.1
+          image: apachepulsar/pulsar:latest
           resources:
             requests:
               memory: "2Gi"
