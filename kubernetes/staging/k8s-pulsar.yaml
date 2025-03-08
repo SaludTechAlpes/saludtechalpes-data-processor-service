@@ -80,10 +80,10 @@ spec:
           resources:
             requests:
               memory: "2Gi"
-              cpu: "1"
+              cpu: "500m"
             limits:
               memory: "3Gi"
-              cpu: "2"
+              cpu: "1"
           env:
             - name: metadataServiceUri
               value: "zookeeper:2181"
