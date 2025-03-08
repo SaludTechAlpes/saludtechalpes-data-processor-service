@@ -77,11 +77,13 @@ spec:
       containers:
         - name: bookie
           image: apachepulsar/pulsar:2.9.1
-          command: ["/bin/bash", "-c"]
-          args:
-            - >
-              bin/apply-config-from-env.py conf/bookkeeper.conf &&
-              exec bin/pulsar bookie
+          resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
           env:
             - name: metadataServiceUri
               value: "zookeeper:2181"
@@ -89,6 +91,11 @@ spec:
               value: "cluster-a"
           ports:
             - containerPort: 3181
+          command: ["/bin/bash", "-c"]
+          args:
+            - >
+              bin/apply-config-from-env.py conf/bookkeeper.conf &&
+              exec bin/pulsar bookie
 ---
 apiVersion: v1
 kind: Service
