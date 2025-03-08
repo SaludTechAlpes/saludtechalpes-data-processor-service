@@ -86,9 +86,9 @@ spec:
               cpu: "1"
           env:
             - name: metadataServiceUri
-              value: "zk:zookeeper:2181"
+              value: "zk://zookeeper:2181"
             - name: metadataStoreUrl
-              value: "zk:zookeeper:2181"
+              value: "zk://zookeeper:2181"
             - name: clusterName
               value: "cluster-a"
             - name: "ZOOKEEPER_SERVICE_HOST"
