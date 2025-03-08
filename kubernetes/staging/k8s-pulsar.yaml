@@ -144,8 +144,10 @@ spec:
               bin/apply-config-from-env.py conf/broker.conf &&
               exec bin/pulsar broker
           env:
+            - name: metadataServiceUri
+              value: "zk://zookeeper:2181"
             - name: metadataStoreUrl
-              value: "zk:zookeeper:2181"
+              value: "zk://zookeeper:2181"
             - name: zookeeperServers
               value: "zookeeper:2181"
             - name: clusterName
@@ -153,7 +155,7 @@ spec:
             - name: advertisedAddress
               value: "pulsar-broker"
             - name: advertisedListeners
-              value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
+              value: "internal:pulsar://pulsar-broker:6650,external:pulsar://pulsar-broker:6650"
           ports:
             - containerPort: 6650  # Pulsar Binary Protocol
             - containerPort: 8080  # Pulsar HTTP API
