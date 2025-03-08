@@ -112,13 +112,6 @@ metadata:
   labels:
     app: pulsar-broker
 spec:
-  initContainers:
-    - name: wait-for-zookeeper
-      image: busybox
-      command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo waiting for zookeeper; sleep 2; done;']
-    - name: wait-for-bookkeeper
-      image: busybox
-      command: ['sh', '-c', 'until nc -z bookkeeper 3181; do echo waiting for bookkeeper; sleep 2; done;']
   replicas: 1
   selector:
     matchLabels:
@@ -128,6 +121,13 @@ spec:
       labels:
         app: pulsar-broker
     spec:
+      initContainers:
+        - name: wait-for-zookeeper
+          image: busybox
+          command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo waiting for zookeeper; sleep 2; done;']
+        - name: wait-for-bookkeeper
+          image: busybox
+          command: ['sh', '-c', 'until nc -z bookkeeper 3181; do echo waiting for bookkeeper; sleep 2; done;']
       containers:
         - name: broker
           image: apachepulsar/pulsar:latest
@@ -144,9 +144,9 @@ spec:
             - name: clusterName
               value: "cluster-a"
             - name: advertisedAddress
-              value: "broker"
+              value: "pulsar-broker"
             - name: advertisedListeners
-              value: "internal:pulsar://broker:6650,external:pulsar://localhost:6650"
+              value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
           ports:
             - containerPort: 6650  # Pulsar Binary Protocol
             - containerPort: 8080  # Pulsar HTTP API
