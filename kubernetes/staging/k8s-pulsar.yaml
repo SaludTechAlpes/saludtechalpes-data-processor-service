@@ -93,6 +93,21 @@ spec:
               value: "zookeeper:2181"
             - name: clusterName
               value: "cluster-a"
+            - name: "ZOOKEEPER_SERVICE_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: bookkeeper-configmap
+                  key: ZOOKEEPER_SERVICE_HOST
+            - name: "ZOOKEEPER_PORT_2181_TCP_PORT"
+              valueFrom:
+                configMapKeyRef:
+                  name: bookkeeper-configmap
+                  key: ZOOKEEPER_PORT_2181_TCP_PORT
+            - name: "zookeeperServers"
+              valueFrom:
+                configMapKeyRef:
+                  name: bookkeeper-configmap
+                  key: zookeeperServers
           ports:
             - containerPort: 3181
           command: ["/bin/bash", "-c"]
