@@ -73,7 +73,7 @@ spec:
               exec bin/pulsar bookie
           env:
             - name: metadataServiceUri
-              value: "zk://zookeeper:2181/ledgers"
+              value: "metadata-store:zk:zookeeper:2181"
             - name: clusterName
               value: "cluster-a"
           ports:
