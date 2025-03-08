@@ -85,6 +85,8 @@ spec:
               memory: "3Gi"
               cpu: "1"
           env:
+            - name: ledgerRootPath
+              value: "/pulsar/bookkeeper/ledgers"
             - name: metadataServiceUri
               value: "zk://zookeeper:2181"
             - name: metadataStoreUrl
