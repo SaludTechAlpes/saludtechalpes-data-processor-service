@@ -55,13 +55,12 @@ spec:
 # Bookkeeper Deployment & Service
 #########################################
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: bookkeeper
   labels:
     app: bookkeeper
 spec:
-  serviceName: "bookkeeper"
   replicas: 1
   selector:
     matchLabels:
@@ -77,7 +76,7 @@ spec:
           command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo waiting for zookeeper; sleep 2; done;']
       containers:
         - name: bookie
-          image: apachepulsar/pulsar:2.9.1
+          image: apachepulsar/pulsar:latest
           resources:
             requests:
               memory: "2Gi"
@@ -113,9 +112,6 @@ spec:
               value: "pulsar-broker"
             - name: advertisedListeners
               value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
-          volumeMounts:
-            - mountPath: /pulsar/bookkeeper/ledgers
-              name:  bookie-volume
           ports:
             - containerPort: 3181
           command: ["/bin/bash", "-c"]
@@ -123,14 +119,6 @@ spec:
             - >
               bin/apply-config-from-env.py conf/bookkeeper.conf &&
               exec bin/pulsar bookie
-  volumeClaimTemplates:
-  - metadata:
-      name: bookie-volume
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi  # Adjust the storage size as per your requirement
 ---
 apiVersion: v1
 kind: Service
