@@ -112,6 +112,9 @@ spec:
               value: "pulsar-broker"
             - name: advertisedListeners
               value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
+          volumeMounts:
+            - mountPath: /pulsar/bookkeeper/ledgers
+              name: bookkeeper-pvc
           ports:
             - containerPort: 3181
           command: ["/bin/bash", "-c"]
@@ -119,6 +122,10 @@ spec:
             - >
               bin/apply-config-from-env.py conf/bookkeeper.conf &&
               exec bin/pulsar bookie
+      volumes:
+        - name: bookkeeper-pvc
+          persistentVolumeClaim:
+            claimName: bookkeeper-pvc
 ---
 apiVersion: v1
 kind: Service
