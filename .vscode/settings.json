@@ -11,5 +11,10 @@
             "database": "saludtechalpes",
             "username": "admin"
         }
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#0C2E55",
+        "titleBar.activeBackground": "#114078",
+        "titleBar.activeForeground": "#F7FAFE"
+    }
 }

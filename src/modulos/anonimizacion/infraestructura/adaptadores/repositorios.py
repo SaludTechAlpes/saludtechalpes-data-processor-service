@@ -37,7 +37,8 @@ class RepositorioImagenAnonimizadaPostgres(RepositorioImagenAnonimizada):
         self.session.commit()
 
     def eliminar(self, id: UUID):
-        self.session.execute(
-            delete(ImagenAnonimizadaDTO).where(ImagenAnonimizadaDTO.id == str(id))
-        )
-        self.session.commit()
+        imagen = self.session.query(ImagenAnonimizadaDTO).filter_by(id=str(id)).one_or_none()
+    
+        if imagen:
+            self.session.delete(imagen)
+            self.session.commit()
