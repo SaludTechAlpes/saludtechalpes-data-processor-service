@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bookkeeper-pvc   # Give your PVC a unique name
+  namespace: default      # Or use your specific namespace
+spec:
+  accessModes:
+    - ReadWriteOnce       # Common for single-node storage
+  resources:
+    requests:
+      storage: 1Gi        # Define the storage size you need (e.g., 1Gi)

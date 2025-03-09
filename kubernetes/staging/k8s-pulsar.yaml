@@ -55,12 +55,13 @@ spec:
 # Bookkeeper Deployment & Service
 #########################################
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: bookkeeper
   labels:
     app: bookkeeper
 spec:
+  serviceName: "bookkeeper"
   replicas: 1
   selector:
     matchLabels:
@@ -114,7 +115,7 @@ spec:
               value: "internal:pulsar://pulsar-broker:6650,external:pulsar://localhost:6650"
           volumeMounts:
             - mountPath: /pulsar/bookkeeper/ledgers
-              name: bookkeeper-pvc
+              name:  bookie-volume
           ports:
             - containerPort: 3181
           command: ["/bin/bash", "-c"]
@@ -122,10 +123,14 @@ spec:
             - >
               bin/apply-config-from-env.py conf/bookkeeper.conf &&
               exec bin/pulsar bookie
-      volumes:
-        - name: bookkeeper-pvc
-          persistentVolumeClaim:
-            claimName: bookkeeper-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: bookie-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi  # Adjust the storage size as per your requirement
 ---
 apiVersion: v1
 kind: Service
