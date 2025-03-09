@@ -20,7 +20,7 @@ class ImagenAnonimizada(AgregacionRaiz):
 
 @dataclass
 class MetadatosAnonimizados(Entidad):
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
+    id: uuid.UUID = None
     token_paciente: uuid.UUID = field(default_factory=uuid.uuid4)
     modalidad: ov.Modalidad = ov.Modalidad.DEFAULT
     region_anatomica: ov.RegionAnatomica = ov.RegionAnatomica.DEFAULT

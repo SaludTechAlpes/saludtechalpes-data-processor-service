@@ -9,7 +9,6 @@ from src.seedwork.dominio.entidades import Entidad
 
 @dataclass
 class ImagenMapeada(Entidad):
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
-    imagen_mapeada_id: uuid.UUID = field(default_factory=uuid.uuid4)
+    id: uuid.UUID = None
     id_cluster_patologia: uuid.UUID = field(default_factory=uuid.uuid4)
-    ruta_imagen_anonimizada: str = field(default_factory=str)
+    ruta_imagen_anonimizada: str = ""

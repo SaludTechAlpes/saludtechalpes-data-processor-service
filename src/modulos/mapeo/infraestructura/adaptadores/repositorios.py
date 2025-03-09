@@ -1,4 +1,5 @@
 from uuid import UUID
+from sqlalchemy import delete
 from src.modulos.mapeo.dominio.puertos.repositorios import RepositorioImagenMapeada
 from src.modulos.mapeo.dominio.entidades import ImagenMapeada
 from src.modulos.mapeo.infraestructura.dto import ImagenMapeadaDTO
@@ -12,6 +13,8 @@ class RepositorioImagenMapeadaPostgres(RepositorioImagenMapeada):
 
     def obtener_por_id(self, id: UUID) -> ImagenMapeada:
         imagen_dto = self.session.query(ImagenMapeadaDTO).filter_by(id=str(id)).one_or_none()
+        if not imagen_dto:
+            return None
         return self.mapeador.dto_a_entidad(imagen_dto)
 
 
@@ -31,5 +34,7 @@ class RepositorioImagenMapeadaPostgres(RepositorioImagenMapeada):
         self.session.commit()
 
     def eliminar(self, id: UUID):
-        self.session.query(ImagenMapeadaDTO).filter_by(id=str(id)).delete()
+        self.session.execute(
+            delete(ImagenMapeadaDTO).where(ImagenMapeadaDTO.id == str(id))
+        )
         self.session.commit()

@@ -32,10 +32,10 @@ class ConsumidorComandoRevetirAnonimizacion(ConsumidorPulsar):
     def __init__(self, puerto_anonimizacion: PuertoProcesarComandoAnonimizacion):
         cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
 
-        super().__init__(cliente, "revertir-anonimizar-datos", "saludtech-sub-comandos", ComandoRevertirAnonimizacionDatos)
+        super().__init__(cliente, "revertir-anonimizacion-datos", "saludtech-sub-comandos", ComandoRevertirAnonimizacionDatos)
         self.puerto_anonimizacion = puerto_anonimizacion
 
     def procesar_mensaje(self, data):
-        self.puerto_anonimizacion.procesar_comando_anonimizacion_fallido(
+        self.puerto_anonimizacion.procesar_comando_revertir_anonimizacion(
             id_imagen_anonimizada=data.id_imagen_anonimizada,
         )

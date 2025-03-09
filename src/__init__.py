@@ -21,10 +21,12 @@ from src.modulos.anonimizacion.infraestructura.consumidores_comandos import Cons
 from src.modulos.anonimizacion.infraestructura.consumidores_eventos import ConsumidorEventosIngesta
 
 # Modulo de mapeo
+from src.modulos.mapeo.infraestructura.despachadores import DespachadorMapeo
+from src.modulos.mapeo.dominio.comandos import RevertirMapeoComando
 from src.modulos.mapeo.aplicacion.servicios import ServicioAplicacionMapeo
 from src.modulos.mapeo.infraestructura.adaptadores.mapear_datos import AdaptadorMapearDatos
 from src.modulos.mapeo.infraestructura.adaptadores.repositorios import RepositorioImagenMapeadaPostgres
-from src.modulos.mapeo.infraestructura.consumidores_comandos import ConsumidorComandosMapeo
+from src.modulos.mapeo.infraestructura.consumidores_comandos import ConsumidorComandosMapeo, ConsumidorComandoRevetirMapeo
 from src.modulos.mapeo.infraestructura.consumidores_eventos import ConsumidorEventosAnonimizacion
 
 from src.config.db import Base, engine
@@ -68,11 +70,14 @@ def comenzar_consumidor():
     # Instanciar el servicio de aplicación de mapeo con sus dependencias
     servicio_mapeo = ServicioAplicacionMapeo(adaptador_mapeo, repositorio_imagenes_mapeadas)
 
-    # consumidor_eventos_anonimizacion = ConsumidorEventosAnonimizacion()
-    # threading.Thread(target=consumidor_eventos_anonimizacion.suscribirse, daemon=True).start()
+    consumidor_eventos_anonimizacion = ConsumidorEventosAnonimizacion()
+    threading.Thread(target=consumidor_eventos_anonimizacion.suscribirse, daemon=True).start()
 
-    # consumidor_comandos_mapeo = ConsumidorComandosMapeo(servicio_mapeo)
-    # threading.Thread(target=consumidor_comandos_mapeo.suscribirse, daemon=True).start()
+    consumidor_comandos_mapeo = ConsumidorComandosMapeo(servicio_mapeo)
+    threading.Thread(target=consumidor_comandos_mapeo.suscribirse, daemon=True).start()
+
+    consumidor_comando_revertir_mapeo = ConsumidorComandoRevetirMapeo(servicio_mapeo)
+    threading.Thread(target=consumidor_comando_revertir_mapeo.suscribirse, daemon=True).start()
 
 def create_app(configuracion=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -122,7 +127,7 @@ def create_app(configuracion=None):
             return jsonify({"error": "Error al enviar evento en `datos-importados`"}), 500
 
     @app.route("/simular-anonimizacion-comando-compensacion", methods=["POST"])
-    def simular_comando_compensacion():
+    def simular_comando_anonimizacion_compensacion():
         """
         Endpoint para simular el envio de una imagen desde el proveedor
         """
@@ -138,12 +143,38 @@ def create_app(configuracion=None):
             )
 
             if not app.config.get('TESTING'):
-                despachador.publicar_comando_compensacion(comando_compensacion, "revertir-anonimizar-datos")
+                despachador.publicar_comando_compensacion(comando_compensacion, "revertir-anonimizacion-datos")
 
-            return jsonify({"message": "Evento de compensacion publicado en `revertir-anonimizar-datos`"}), 200
+            return jsonify({"message": "Evento de compensacion publicado en `revertir-anonimizacion-datos`"}), 200
         
         except Exception as e:
-            logger.error(f"❌ Error al publicar evento de compensación en `revertir-anonimizar-datos`: {e}")
-            return jsonify({"error": "Error al publicar evento de compensacion en `revertir-anonimizar-datos`"}), 500
+            logger.error(f"❌ Error al publicar evento de compensación en `revertir-anonimizacion-datos`: {e}")
+            return jsonify({"error": "Error al publicar evento de compensacion en `revertir-anonimizacion-datos`"}), 500
+
+
+    @app.route("/simular-mapeo-comando-compensacion", methods=["POST"])
+    def simular_comando_mapeo_compensacion():
+        """
+        Endpoint para simular el envio de una imagen desde el proveedor
+        """
+        try:
+            data = request.get_json()
+            id_imagen_mapeada = data.get("id_imagen_mapeada", None)
+
+            despachador = DespachadorMapeo()
+
+            comando_compensacion = RevertirMapeoComando(
+                id_imagen_mapeada = id_imagen_mapeada,
+                es_compensacion = True
+            )
+
+            if not app.config.get('TESTING'):
+                despachador.publicar_comando_compensacion(comando_compensacion, "revertir-mapeo-datos")
+
+            return jsonify({"message": "Evento de compensacion publicado en `revertir-mapeo-datos`"}), 200
+        
+        except Exception as e:
+            logger.error(f"❌ Error al publicar evento de compensación en `revertir-mapeo-datos`: {e}")
+            return jsonify({"error": "Error al publicar evento de compensacion en `revertir-mapeo-datos`"}), 500
 
     return app

@@ -15,8 +15,6 @@ class AdaptadorAnonimizarDatos(PuertoAnonimizarDatos):
         ruta_anonimizada = self._anonimizar_imagen(ruta_imagen_importada)
         metadatos_extraidos = self._extraccion_metadatos(ruta_metadatos_importados)
 
-        logger.info(f"👉 Datos anonimizados de manera exitosa. Ruta imagen anonimizada {ruta_anonimizada} y ruta metadatos anonimizados {metadatos_extraidos}")
-
         return {
             "ruta_imagen_anonimizada": ruta_anonimizada,
             "metadatos_anonimizados": metadatos_extraidos

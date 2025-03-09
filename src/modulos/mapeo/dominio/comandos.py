@@ -9,6 +9,13 @@ import src.modulos.mapeo.dominio.objetos_valor as ov
 
 @dataclass
 class MapearDatosComando:
-    id_imagen: Optional[uuid.UUID] = None
+    id_imagen_importada: Optional[uuid.UUID] = None
+    id_imagen_anonimizada: Optional[uuid.UUID] = None
     etiquetas_patologicas: List[ov.EtiquetaPatologica] = field(default_factory=list)
     ruta_imagen_anonimizada: Optional[str] = None
+    evento_a_fallar: Optional[str] = None
+
+@dataclass
+class RevertirMapeoComando:
+    id_imagen_mapeada: Optional[uuid.UUID] = None
+    es_compensacion: Optional[bool] = True

@@ -10,9 +10,6 @@ import json
 def get_uuid():
     return str(uuid.uuid4())
 
-def default_list():
-    return []
-
 class ImagenMapeadaDTO(Base):    
     __tablename__ = "imagenes_mapeadas"
 
@@ -22,5 +19,5 @@ class ImagenMapeadaDTO(Base):
         id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     id_cluster_patologia = Column(String)
-    id_imagen_mapeada = Column(String)
+    ruta_imagen_anonimizada = Column(String)
 

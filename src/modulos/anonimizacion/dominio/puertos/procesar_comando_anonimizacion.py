@@ -7,5 +7,5 @@ class PuertoProcesarComandoAnonimizacion(ABC):
         ...
     
     @abstractmethod
-    def procesar_comando_anonimizacion_fallido(self, id_imagen_anonimizada: str):
+    def procesar_comando_revertir_anonimizacion(self, id_imagen_anonimizada: str):
         ...

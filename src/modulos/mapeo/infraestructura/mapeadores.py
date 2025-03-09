@@ -11,12 +11,12 @@ class MapeadorImagenMapeada(Mapeador):
         return ImagenMapeadaDTO(
             id=imagen.id,
             id_cluster_patologia=imagen.id_cluster_patologia,
-            id_imagen_mapeada=imagen.id,
+            ruta_imagen_anonimizada=imagen.ruta_imagen_anonimizada,
         )
 
     def dto_a_entidad(self, dto: ImagenMapeadaDTO) -> ImagenMapeada:
         return ImagenMapeada(
             id=dto.id,
-            imagen_mapeada_id=dto.id,
             id_cluster_patologia=dto.id_cluster_patologia,
+            ruta_imagen_anonimizada=dto.ruta_imagen_anonimizada,
         )

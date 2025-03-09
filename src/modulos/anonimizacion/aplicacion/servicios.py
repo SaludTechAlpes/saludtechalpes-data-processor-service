@@ -20,7 +20,7 @@ class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
         self.servicio_dominio = ServicioDominioAnonimizacion()
         self.despachador = DespachadorAnonimizacion()
 
-    def procesar_comando_anonimizacion_fallido(self, id_imagen_anonimizada: str):
+    def procesar_comando_revertir_anonimizacion(self, id_imagen_anonimizada: str):
         try:
             imagen_anonimizada = self.repositorio_imagenes.obtener_por_id(id_imagen_anonimizada)
 
@@ -42,10 +42,9 @@ class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
             self.servicio_dominio.validar_imagen(ruta_imagen_importada)
             datos_anonimizados = self.adaptador_anonimizacion.anonimizar_datos(ruta_imagen_importada, ruta_metadatos_importados)
 
-            if not datos_anonimizados or evento_a_fallar == 'DatosAnonimizados':
+            if not datos_anonimizados:
                 raise ValueError("Error: No se pudo anonimizar la imagen")
-            
-            logger.info(f'👉 Datos_anonimizados: {datos_anonimizados}')
+        
 
             id_metadatos = uuid.uuid4()
 
@@ -67,6 +66,9 @@ class ServicioAplicacionAnonimizacion(PuertoProcesarComandoAnonimizacion):
             )
 
             self.repositorio_imagenes.agregar(imagen_anonimizada)
+
+            if evento_a_fallar == 'DatosAnonimizados':
+                raise ValueError("Error: Error al anonimizar los datos")
 
             evento = DatosAnonimizadosEvento(
                 id_imagen_importada=id_imagen_importada,
