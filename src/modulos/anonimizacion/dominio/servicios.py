@@ -3,5 +3,5 @@ from src.seedwork.dominio.servicios import Servicio
 
 class ServicioDominioAnonimizacion(Servicio):
     
-    def validar_imagen(self, ruta_imagen: str):
-        self.validar_regla(FormatoImagenValido(ruta_imagen))
+    def validar_imagen(self, id_imagen_importada: str):
+        self.validar_regla(FormatoImagenValido(id_imagen_importada))

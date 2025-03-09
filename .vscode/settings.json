@@ -1,3 +1,15 @@
 {
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "saludtechalpes",
+            "database": "saludtechalpes",
+            "username": "admin"
+        }
+    ]
 }

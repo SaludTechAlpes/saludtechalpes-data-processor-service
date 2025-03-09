@@ -18,14 +18,14 @@ class ImagenAnonimizadaDTO(Base):
 
     if os.getenv("FLASK_ENV") == "test":
         id = Column(String, primary_key=True, default=get_uuid)
-        metadatos_id = Column(String, ForeignKey("metadatos_anonimizados.id", ondelete="SET NULL"), nullable=True)
+        metadatos_id = Column(String, ForeignKey("metadatos_anonimizados.id",ondelete="CASCADE"), nullable=True)
     else:
         id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-        metadatos_id = Column(UUID(as_uuid=True), ForeignKey("metadatos_anonimizados.id", ondelete="SET NULL"), nullable=True)
+        metadatos_id = Column(UUID(as_uuid=True), ForeignKey("metadatos_anonimizados.id", ondelete="CASCADE"), nullable=True)
 
     ruta_imagen_anonimizada = Column(String, nullable=False)
     fecha_procesamiento = Column(DateTime, nullable=False)
-    metadatos = relationship("MetadatosAnonimizadosDTO", back_populates="imagen")
+    metadatos = relationship("MetadatosAnonimizadosDTO", back_populates="imagen", cascade="all, delete")
 
 
 class MetadatosAnonimizadosDTO(Base):  
