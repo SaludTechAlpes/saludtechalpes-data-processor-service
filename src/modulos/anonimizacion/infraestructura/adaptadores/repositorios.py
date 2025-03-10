@@ -1,4 +1,5 @@
 from uuid import UUID
+from sqlalchemy import delete
 from src.modulos.anonimizacion.dominio.puertos.repositorios import RepositorioImagenAnonimizada
 from src.modulos.anonimizacion.dominio.entidades import ImagenAnonimizada
 from src.modulos.anonimizacion.infraestructura.dto import ImagenAnonimizadaDTO
@@ -36,5 +37,8 @@ class RepositorioImagenAnonimizadaPostgres(RepositorioImagenAnonimizada):
         self.session.commit()
 
     def eliminar(self, id: UUID):
-        self.session.query(ImagenAnonimizadaDTO).filter_by(id=str(id)).delete()
-        self.session.commit()
+        imagen = self.session.query(ImagenAnonimizadaDTO).filter_by(id=str(id)).one_or_none()
+    
+        if imagen:
+            self.session.delete(imagen)
+            self.session.commit()
