@@ -1,3 +1,20 @@
 {
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "saludtechalpes",
+            "database": "saludtechalpes",
+            "username": "admin"
+        }
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#0C2E55",
+        "titleBar.activeBackground": "#114078",
+        "titleBar.activeForeground": "#F7FAFE"
+    }
 }

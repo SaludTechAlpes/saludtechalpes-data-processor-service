@@ -1,6 +1,6 @@
 from src.modulos.ingesta.infraestructura.schema.v1.eventos import EventoDatosImportados
 from src.seedwork.infraestructura.consumidor_pulsar import ConsumidorPulsar
-from src.modulos.anonimizacion.infraestructura.despachadores import Despachador
+from src.modulos.anonimizacion.infraestructura.despachadores import DespachadorAnonimizacion
 from src.modulos.anonimizacion.dominio.comandos import AnonimizarDatosComando
 import pulsar
 import logging
@@ -16,7 +16,7 @@ class ConsumidorEventosIngesta(ConsumidorPulsar):
     """
     Consumidor de eventos de ingesta que usa Pulsar.
     """
-    despachador = Despachador()
+    despachador = DespachadorAnonimizacion()
 
     def __init__(self):
         cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
@@ -25,7 +25,9 @@ class ConsumidorEventosIngesta(ConsumidorPulsar):
 
     def procesar_mensaje(self, data):
         comando_anonimizar = AnonimizarDatosComando(
-            ruta_imagen="/ruta/fake/imagen.dcm",
-            ruta_metadatos="/ruta/fake/metadatos.pdf",
+            id_imagen_importada = data.id_imagen_importada,
+            ruta_imagen_importada="/ruta/fake/imagen.dcm",
+            ruta_metadatos_importados="/ruta/fake/metadatos.pdf",
+            evento_a_fallar= data.evento_a_fallar
         )
         self.despachador.publicar_comando(comando_anonimizar, "anonimizar-datos")

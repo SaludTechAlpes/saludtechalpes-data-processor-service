@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 config = Config()
 
-class Despachador:    
+class DespachadorIngesta:    
     def _publicar_mensaje(self, mensaje, topico, schema):
         try:
             cliente = pulsar.Client(f'pulsar://{config.BROKER_HOST}:6650')
@@ -21,8 +21,10 @@ class Despachador:
     
     def publicar_evento(self, evento, topico):
         payload = EventoDatosImportadosPayload(
-            ruta_imagen=evento.ruta_imagen,
-            ruta_metadatos=evento.ruta_metadatos
+            id_imagen_importada=evento.id_imagen_importada,
+            ruta_imagen_importada=evento.ruta_imagen_importada,
+            ruta_metadatos_importados=evento.ruta_metadatos_importados,
+            evento_a_fallar=evento.evento_a_fallar
         )
         evento_ingesta = EventoDatosImportados(data=payload)
         self._publicar_mensaje(evento_ingesta, topico, EventoDatosImportados)
